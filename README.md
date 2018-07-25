@@ -2,6 +2,19 @@
 
 Test Impact Analysis (TIA) in Python.
 
+## Design
+
+### Git interaction
+
+- git ([ducumentation](https://git-scm.com/doc) / [source code](https://github.com/git/git))
+- Dulwich ([ducumentation](https://www.dulwich.io/) / [source code](https://github.com/dulwich/dulwich))
+
+  "Dulwich is a Python implementation of the Git file formats and protocols, which does not depend on Git itself."
+
+- GitPython ([documentation](http://gitpython.readthedocs.io/en/stable/) / [source code](https://github.com/gitpython-developers/GitPython))
+
+  "GitPython is a python library used to interact with git repositories, high-level like git-porcelain, or low-level like git-plumbing."
+
 ## Other Python packages implementing TIA
 
 Right now there is a proof of concept using scripts and 2 Python packages which implement TIA. Each solution is implementing
