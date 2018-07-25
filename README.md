@@ -15,6 +15,16 @@ Test Impact Analysis (TIA) in Python.
 
   "GitPython is a python library used to interact with git repositories, high-level like git-porcelain, or low-level like git-plumbing."
 
+### Semantic diff
+
+No tools known which could be used for semantic diffs.
+
+> Alternatives evaluated but not suitable:
+> - [Semantic Diff](https://github.com/hoelzro/semantic-diff) is highly experimental and doesn't support Python 3.
+> - [SemanticMerge](https://www.semanticmerge.com/) is commercial and doesn't support Python 3.
+> - [Smart Differencer](http://www.semanticdesigns.com/Products/SmartDifferencer/index.html) is commercial and
+> doesn't support Python 3 (only Python 2.6).
+
 ## Other Python packages implementing TIA
 
 Right now there is a proof of concept using scripts and 2 Python packages which implement TIA. Each solution is implementing
