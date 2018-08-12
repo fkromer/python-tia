@@ -60,3 +60,17 @@ If there is info available and the last modification time of the production code
 In case there is no dependency info or the last modification time of one of the tests associated production code files has changed the test is executed.
 During test execution trace info is gathered and the dependency information for the test (mapping of test to executed production code files) stored in the database.
 After execution the databaes is closed via `pytest` hook [`pytest_unconfigure()`](https://github.com/mapix/ptknows/blob/master/ptknows.py#L51).
+
+## nose-knows
+
+
+Sources: [github.com/eventbrite/nose-knows](https://github.com/eventbrite/nose-knows)
+
+Package: [pypi/nose-knows](https://pypi.org/project/nose-knows/)
+
+`nose-knows` is a `nose` plugin with experimental support for `pytest`.
+The *coverage map* (`.knows` file) maps production code on the file level vs. tests (created in "output mode", cmd line option `--knows-out`).
+In [`Knows.begin()`](https://github.com/eventbrite/nose-knows/blob/master/src/knows/base.py#L58) it makes use of `threading.settrace(self.tracer)`
+with the tracer  function [`Knows.tracer()`](https://github.com/eventbrite/nose-knows/blob/master/src/knows/base.py#L63) to trace the production code executed during tests. `begin()` is integrated into the test runner processing procedure
+(`nose`: [`KnowsNosePlugin.begin()`](https://github.com/eventbrite/nose-knows/blob/master/src/knows/nose_plugin.py#L105), `pytest`: [`pytest_sessionstart()`](https://github.com/eventbrite/nose-knows/blob/master/src/knows/pytest_plugin.py#L94)). The trace context for particular tests is determined via [`Knows.start_test()`](https://github.com/eventbrite/nose-knows/blob/master/src/knows/base.py#L84) which is called in the plugins via the corresponding test runner hooks (`nose`: [`KnowsNosePlugin.startTest()`](https://github.com/eventbrite/nose-knows/blob/master/src/knows/nose_plugin.py#L108), `pytest`: [`pytest_runtest_protocol()`](https://github.com/eventbrite/nose-knows/blob/a647cc1f82984522f728ccc83145c774f4756197/src/knows/pytest_plugin.py#L99)).
+In "input mode" the coverage map (`.knows` file) is used to generate the *impact map* dynamically [`Knows.get_tests_to_run()`](https://github.com/eventbrite/nose-knows/blob/3ac3cfc81c7d3bc7beaf2b533ab37a0bbf132779/src/knows/base.py#L26) for a production code file and to selectivelly run tests for it.
