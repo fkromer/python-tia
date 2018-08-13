@@ -1,6 +1,21 @@
 # python-tia
 
-Test Impact Analysis (TIA) in Python.
+The command line application `tia` is a generic and flexible Test Impact Analysis (TIA) preprocessor for test tools.
+
+## Reasons for python-tia
+
+- Triggering test execution in a Test Driven Development (TDD) manner on a developer machine may be annoying because tests need to be selected explicitly for execution. *"As a developer I want to call `tia` that the recently changed tests on my dev machine are selected for execution."*
+- Test execution time on a developer machine may be that long that it prevents from adapting an effective Test Driven Development (TDD) workflow. In the worst case executing tests becomes that annoying that it is skipped completely. *"As a developer I want to call `tia` that the minimal possible sub-set of tests is selected for execution."*
+- It may not be obvious what tests need to be executed after production code was changed. *As a developer I want to call `tia` that the tests are selected for execution which corresponds to the recently changed production code on my dev machine.*
+- Running analyzers in a Test Driven Development (TDD) manner may be annoying because it's not always obvious if they need to be run at all and in case they should over which files they should run. *As a developer I want to call `tia` that the recently changed production code on my dev machine is selected for analyzation if required.*
+- Running analyzers over more files than required is (usually not critical but anyway) a waste of time . *As a developer I want to call `tia` that the minimal possible sub-set of files is considered for analysis.*
+
+## Features
+
+- **semantic mapping**: `tia` let's you semantically map directories and files to test and analysis tools in a *semantic map*.
+- **determination of file changes**: `tia` determines changes to the production and test code of Python projects which is under version control.
+- **coverage mapping**: `tia` traces which production code is executed by every single test via dynamic analysis and keeps track of it in a *coverage map* (production code vs. test code).
+- **impact mapping**: `tia` determines for every production code change which tests need to be executed to catch possible regressions and keeps track of it in a *impact map*.
 
 ## Design
 
