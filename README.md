@@ -1,5 +1,6 @@
 # python-tia
 
+[![GitHub license](https://img.shields.io/github/license/fkromer/python-tia.svg)](https://github.com/fkromer/python-tia/blob/master/LICENSE)
 [![Read the Docs](https://img.shields.io/readthedocs/pip.svg)](https://python-tia.readthedocs.io)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/fkromer)
 
