@@ -1,5 +1,6 @@
 # python-tia
 
+[![Read the Docs](https://img.shields.io/readthedocs/pip.svg)](https://python-tia.readthedocs.io)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/fkromer)
 
 The command line application `tia` is a generic and flexible Test Impact Analysis (TIA) preprocessor for test tools.
