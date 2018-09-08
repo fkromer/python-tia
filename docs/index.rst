@@ -8,6 +8,8 @@ python-tia
 
    reasoning
    features
+   guide
+   design
    roadmap
    alternatives
    changes
