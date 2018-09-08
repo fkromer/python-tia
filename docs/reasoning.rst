@@ -12,3 +12,7 @@ Reasons for python-tia
 - **"As a developer I want to call tia that the recently changed production code on my dev machine is selected for static analysis."**
   Running analyzers in a Test Driven Development (TDD) manner may be annoying because it's not always obvious if they need to be run at all and in case they should over which files they should run.
   Running analyzers over more files than required is (usually not critical but anyway) a waste of time.
+
+- **"As a DevOp I want a CI job to call tia that the changed tests between the previous and the current VCS repository state are selected for execution."**
+- **"As a DevOp I want a CI job to call tia that the tests are selected for execution which correspond to production code changes between the previous and the current VCS repository state."**
+- **"As a DevOp I want a CI job to call tia that the changed production code between the previous and the current VCS repository state is selected for static analysis."**

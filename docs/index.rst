@@ -9,4 +9,5 @@ python-tia
    reasoning
    features
    roadmap
+   alternatives
    changes
