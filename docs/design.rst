@@ -85,12 +85,32 @@ the advantages of StrictYAML compared to other configuration file formats.
 .. _StrictYaml: https://github.com/crdoconnor/strictyaml
 .. _Why StrictYaml?: https://github.com/crdoconnor/strictyaml#why-strictyaml
 
-Version control systems (VCS) interaction
------------------------------------------
+Detection of changes
+--------------------
 
-Right now it is planned to support the version control system `git` only.
-If you are interested in contributing support for another VCS like Bazaar, Mercurial, etc.
-feel free to create pull requests.
+Changes of the production and test code will be determined on different levels of abstraction.
+
+Detection of file scope changes
+...............................
+
+W.r.t. `file scope state changes` (file added/modified/deleted) the approach will differ dependent
+on the runtime environment (local devemlopment machine - `local`, CI server - `ci`).
+There are some design choices which are based on the determination of
+
+* filesystem metadata, e.g. time of last file change
+ (choice for environment `local` only)
+* filesystem events (choice for environment `local` only)
+* checksums over files (choice for environment `local` as well as `ci`)
+* version control system (VCS) information (choice for environment `local` as well as `ci`)
+
+To support file scope change detection in the `ci` environment a VCS based approach is used.
+It is planned to support the version control system `git` out-fo-the-box. The implementation
+won't consider extensibility of VCS support (no plugin system and pre-packaged plugin approach)
+in the beginning but aims at a plugin system conform API to ease probable later refactoring.
+(Encapsulating VCS support into externally deployed plugins could potentially ease maintenance
+over the long run.) If you are interested in contributing support for another VCS like Bazaar,
+Mercurial, etc. feel free to create pull requests. The VCS functionality should be easily exchangeable
+using a configuration option and strategy pattern (to exchange VCS implementations).
 
 The capabilities and known limitations of the packages have been analyzed.
 The following characteristics have been considered during evaluation:
@@ -100,8 +120,11 @@ The following characteristics have been considered during evaluation:
 - supported OS
 - interface which would allow to implement semantid diffs
 
-The following alternatives have been evaluated to implement interaction with
-the version control system (VCS) `git`.
+VCS (git) based detection of file scope changes
+...............................................
+
+The following alternatives have been considered to implement interaction with
+the VCS `git`.
 
 - `git` (`git documentation`_ / `git source code`_) (via `subprocess.Popen()`)
 - Dulwich (`Dulwich documentation`_ / `Dulwich source code`_)
@@ -119,6 +142,8 @@ the version control system (VCS) `git`.
 .. _GitPython documentation: http://gitpython.readthedocs.io/
 .. _GitPython source code: https://github.com/gitpython-developers/GitPython
 .. _GitPython known limitations: https://gitpython.readthedocs.io/en/stable/intro.html#limitations
+
+`GitPython` is used to implement `git` based file scope change detection.
 
 Semantic diff
 -------------
@@ -145,9 +170,25 @@ However no alternative is usable and has not been evaluated in more detail.
 .. _SemanticMerge: https://www.semanticmerge.com
 .. _Smart Differencer: http://www.semanticdesigns.com/Products/SmartDifferencer/index.html
 
-Test runner
------------
+Continuous Integration environment
+----------------------------------
 
-For unit tests as usual my prefered choice: `pytest (docs)`.
+Task execution
+..............
+
+`tox` is used to allow the execution of every CI job in various Python virtual environments.
+
+Testing
+.......
+
+Tests of `python-tia` depend on the test runner `pytest (docs)`.
+Execution of tests will be integrated into the CI environment via
+`tox` environment `tests`.
 
 .. _pytest (docs): https://docs.pytest.org
+
+Static analysis
+...............
+
+Various static analyzers are integrated into the CI environment and
+are invoked using various `tox` environments defined in `tox.ini`.
