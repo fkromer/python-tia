@@ -30,48 +30,12 @@ General considerations
 Command line interface
 ----------------------
 
-*Click* is used to implement the command line interface.
+`Click`_ is used to implement the Command Line Interface (CLI). Refer to `Why click?`_
+and the `Why not (...)?` sections for more information about the differences
+in comparison to other CLI specific packages.
 
-* *Click*: `Click (docs)`_ (`Why click?`_)
-  
-  * +: nesting of commands
-  * +: lazy loading of subcommands
-  * ?: based on optparse
-  * +: type handling and validation
-
-Other alternatives which have been considered:
-
-* `argparse (docs)`_ (`Why not argparse?`_)
-
-  * ?: built-in magic to guess what is an argument or an option problematic with incomplete command lines
-  * ?: does not support disabling of interspersed arguments (not possible to implement nested parsing)
-
-* *Clint*: `clint (github)`_
-
-  * -: archieved, last release in 2015
-
-* *cement*: `cement (docs)`_, `cement (API reference)`_
-
-  * ?: heavy weight (a lot is irrelevant for *python-tia*)
-
-* *docopt*: `docopt (github)`_ , `docopt (docs)`_ (`Why not Docopt etc.?`_)
-  
-  * -: no rewrap of output to the current terminal width
-  * -: no translations (irrelevant)
-  * -: parsing only: no argument dispatching, no callback invocation, no type handling
-  * -: limited composability: only subcommand dispatching, no automatic subcommand enumeration,
-    consistent subcommand behaviour enforcement
-
-.. _argparse (docs): <https://docs.python.org/3/library/argparse.html
-.. _cement (docs): https://docs.builtoncement.com/
-.. _cement (API reference): https://cement.readthedocs.io
-.. _clint (github): https://github.com/kennethreitz/clint
 .. _Click (docs): click.pocoo.org
 .. _Why click?: http://click.pocoo.org/5/why/#why-click
-.. _docopt (github): https://github.com/docopt/docopt
-.. _docopt (docs): http://docopt.org/
-.. _Why not argparse?: http://click.pocoo.org/5/why/#why-not-argparse
-.. _Why not Docopt etc.?: http://click.pocoo.org/5/why/#why-not-docopt-etc
 
 Configuration file
 ------------------
@@ -80,7 +44,7 @@ As configuration file format (*semantic mapping*, etc.) StrictYAML is used.
 StrictYAML is a type-safe subset of YAML which enables advantages and avoids
 disadvantages of YAML. Refer to `Why StrictYaml?`_ for more information about
 the advantages of StrictYAML compared to other configuration file formats.
-`StrictYaml`_ is used to parse and validate config input.
+`StrictYaml`_ is used to parse and validate configuration file input.
 
 .. _StrictYaml: https://github.com/crdoconnor/strictyaml
 .. _Why StrictYaml?: https://github.com/crdoconnor/strictyaml#why-strictyaml
