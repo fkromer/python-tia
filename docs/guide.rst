@@ -97,23 +97,15 @@ Consider a Python package test file structure like follows:
                test_file2.py
        pytest.ini
 
-A *full-scope execution* (of all tests) shall be triggered whenever one of the files
+A *full-scope execution* (of all tests) needs to be triggered whenever one of the files
 `pytest.ini`, `tests/conftest.py`, `tests/fixtures.py` or `tests/utils.py` has changed.
 
-A *partial-scope execution* (of the minimal possible subset of tests) shall be triggered
+A *partial-scope execution* (of the minimal possible subset of tests) is sufficient
 whenever one of the files in the directories `tests/test_group1`, `tests/test_group2`
-or any corresponding production code files in the *impact map* have changed.
+or any corresponding production code files in the *impact map* has changed.
 
-Trigger a full test execution pipeline for `pytest` in case
-
-* the config file `pytest.ini` or
-* the fixture definition files in ``
-
-change and trigger a partial execution pipeline in case 
-
-*  
-
-the corrsponding semantic mapping for the `pytest` pipline would be defined like follows:
+A suitable pipeline configuration which executes `pytest` for the given project structure
+could be defined with the following semantic mapping.
 
 .. code-block:: yaml
 
@@ -136,35 +128,40 @@ The default value for the execution scope is *partial-scope*.
 `full-scope` option.
 
 Semantic mapping of static analysis tools
------------------------------------------
+.........................................
 
-This section shows exemplary semantic maps for common static analysis tools in Python application development.
+This section shows exemplary semantic mappings for common static analysis tools in Python application development.
 
 Trigger the static analysis pipeline for `hadolint` in case either the
 config file `hadolint.yaml` or the docker file `Dockerfile` changes.
 
 .. code-block:: yaml
 
-   [pipline:hadolint]
+   [pipeline:hadolint]
    files =
        - hadolint.yaml
        - Dockerfile
    command = hadolint --config hadolint.yaml Dockerfile
 
-Trigger the static analysis of the manifest file with [check-manifest](https://github.com/mgedmin/check-manifest)
-in case the `MANIFEST.in` changes.
+Trigger the static analysis of the manifest file with `check-manifest`_ in case the `MANIFEST.in` changes.
 
-    [check-manifest]
+.. code-block:: yaml
+
+    [pipeline: check-manifest]
     file = MANIFEST.in
     command = check-manifest
+
+.. _check-manifest: https://github.com/mgedmin/check-manifest
 
 Impact mapping
 --------------
 
-
+TODO
 
 Coverage mapping
 ----------------
+
+TODO
 
 A *coverage map* descibes which production code is executed by which test code.
 Independent of the programming language this information is gathered using *dynamic analysis*.
