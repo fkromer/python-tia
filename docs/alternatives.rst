@@ -21,13 +21,46 @@ Package: `pytest-testmon (pypi)`_
 Evaluation result: No option due to `pytest` test runner dependency.
 
 `pytest-testmon` is a `pytest` plugin which automatically selects and re-executes only tests affected by recent changes.
-File scope changes are determined using `hashlib` and `zlib`. `ast` is used to generate Python language aware change interpretation.
+File scope changes are determined based on hash using `hashlib` and `zlib.adler32()`. `ast` is used to generate Python language aware change interpretation.
 For coverage tracking `coveragpy` is used. Subprocess coverage tracking requires manual installation of `coverage-pth`.
 The standard lib module `ast` is used to create an abstract representation of the source code as input for 
 `pytest-testmon` can be used with `pytest-watch` to trigger its execution automatically.
 
 .. _pytest-testmon (github): https://github.com/tarpas/pytest-testmon
 .. _pytest-testmon (pypi): https://pypi.org/project/pytest-testmon
+
+when-changed
+------------
+
+Sources: `when-changed (github)`_
+
+Evaluation result: No option due to limited capabilities.
+
+*when-changed* is a command line tool which executes commands when a directories or files have changed.
+File changes are detected continuously using `watchdog (github)`_ :code:`class watchdog.events.FileSystemEventHandler()`
+(https://github.com/joh/when-changed/blob/master/whenchanged/whenchanged.py#L36) and
+:code:`watchdog.observers.Observer()`.
+
+.. _when-changed (github): https://github.com/joh/when-changed
+.. _watchdog (github): https://github.com/gorakhargosh/watchdog
+
+watchdog
+--------
+
+Sources: `watchdog (github)`_
+
+Documentation: `watchdog (docs)`_
+
+Package: `watchdog (pypi)`_
+
+*watchdog* provides various filesystem observers: an OS native filesystem observer (https://pythonhosted.org/watchdog/api.html#module-watchdog.observers),
+a polling observer (https://pythonhosted.org/watchdog/api.html#module-watchdog.observers.polling), etc.
+Observers trigger event handlers (https://pythonhosted.org/watchdog/api.html#event-handler-classes)
+in case of various filesystem events (https://pythonhosted.org/watchdog/api.html#event-classes).
+
+.. _watchdog (docs): https://pythonhosted.org/watchdog
+.. _watchdog (github): https://github.com/gorakhargosh/watchdog
+.. _watchdog (pypi): https://pypi.org/project/watchdog
 
 pytest-picked
 -------------
