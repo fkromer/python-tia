@@ -1,6 +1,7 @@
-from tia.config import read
+from tia.config import read_file
+from pytest import raises
 
-def test_read_config_file(tmpdir):
+def test_reading_existing_config_file_returns_string(tmpdir):
     cf = tmpdir.mkdir("subdir").join("tia.yaml")
     expected_str = """
     some
@@ -10,4 +11,10 @@ def test_read_config_file(tmpdir):
     """
     cf.write(expected_str)
     file_path = str(cf)
-    assert read(file_path) == expected_str
+    assert read_file(file_path) == expected_str
+
+def test_reading_non_existing_config_file_raises_exception():
+    file_path = "/nonexisting"
+    expected_str = "irrelevant"
+    with raises(Exception):
+        assert read_file(file_path) == expected_str
