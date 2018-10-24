@@ -7,24 +7,18 @@
 
 `tia`: The generic Test Impact Analysis (TIA) preprocessor for test tools.
 
+Refer to the documentation on [python-tia.readthedocs.io](https://python-tia.readthedocs.io).
+
 ## Installation
 
+Via `pip3`:
+
     $ pip3 install --user python-tia
+
+Via `pipenv`:
+
+    $ pipenv install python-tia
 
 ## Documentation
 
 Refer to the documentation on [python-tia.readthedocs.io](https://python-tia.readthedocs.io).
-
-## Development
-
-Install development requirements from `Pipfile`:
-
-    $ pipenv install --skip-lock
-
-Show available `tox` environments:
-
-    $ pipenv run tox -av
-
-Run `tox` environments (here: `docs`):
-
-    $ pipenv run tox -e docs
