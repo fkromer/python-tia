@@ -1,6 +1,6 @@
-from typing import AnyStr
 from pathlib import Path
-from strictyaml import YAML, Map, Seq, Any, Bool, load, Str
+from strictyaml import YAML, Map, Seq, Any, Bool, load, Str, Optional
+from strictyaml.exceptions import YAMLValidationError
 
 CONFIG_FILE_NAME: str = 'tia.yaml'
 
@@ -15,7 +15,7 @@ def read_file(file_path: str) -> str:
     config_file = Path(file_path)
     if not config_file.is_file():
         raise FileNotFoundError('Config file {name} not found.'.format(name=config_file.name))
-    if not config_file.name == CONFIG_FILE_NAME:
+    if config_file.name != CONFIG_FILE_NAME:
         raise ConfigError('Invalid config file name {name}.'.format(name=config_file.name))
     return config_file.read_text()
 
@@ -26,11 +26,11 @@ def read_and_validate_config(strictyaml_config: str) -> YAML:
 def is_pipelines_config_valid(strictyaml_pipelines: YAML) -> YAML:
     pipelines_schema = Map({"pipelines": Seq(Map({
         "name": Str(),
-        "dirs": Seq(Map({"path": Str(), "full-scope": Bool()})),
-        "files": Seq(Map({"path": Str(), "full-scope": Bool()}))
+        Optional("dirs"): Seq(Map({"path": Str(), "full-scope": Bool()})),
+        Optional("files"): Seq(Map({"path": Str(), "full-scope": Bool()}))
         }))})
     try:
         strictyaml_pipelines.revalidate(pipelines_schema)
         return True
-    except:
+    except YAMLValidationError:
         return False
