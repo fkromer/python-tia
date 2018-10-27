@@ -12,4 +12,5 @@ python-tia
    design
    roadmap
    alternatives
+   contributing
    changes
