@@ -15,6 +15,7 @@ pytest-cov = '*'
 mypy = '*'
 sphinx = '>=1.7.9'
 alabaster = '>=0.7.11'
+python-taint = "*"
 
 [packages]
 python-tia = {editable = true, path = "."}
