@@ -89,6 +89,26 @@ def test_read_valid_single_pipeline_with_dirs_only_config():
     assert is_pipelines_config_valid(yaml_pipelines) == True
     assert yaml_pipelines == expected_yaml_instance
 
+def test_read_valid_single_pipeline_with_files_only_config():
+    yaml_pipelines_config = """
+    pipelines:
+    - name: pytest
+      files:
+      - path:       foo_file.py
+        full-scope: yes
+      - path:       bar_file.py
+        full-scope: no
+    """
+    yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
+    expected_yaml_instance = YAML(OrderedDict([('pipelines',
+                                                [OrderedDict([('name', 'pytest'),
+                                                              ('files',
+                                                               [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]),
+                                                                OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])])])]))
+    assert is_pipelines_config_valid(yaml_pipelines) == True
+    assert yaml_pipelines == expected_yaml_instance
+
+
 def test_read_invalid_pipelines_config():
     yaml_pipelines_config = """
     pipelines:
