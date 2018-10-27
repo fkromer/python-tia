@@ -43,7 +43,7 @@ def test_read_valid_parent_key_config():
     """
     assert read_and_validate_config(yaml_config) == YAML(OrderedDict([('pipelines', '')]))
 
-def test_read_valid_full_blown_pipelines_config():
+def test_read_valid_explicit_full_blown_pipelines_config():
     yaml_pipelines_config = """
     pipelines:
     - name: pytest
@@ -67,6 +67,30 @@ def test_read_valid_full_blown_pipelines_config():
     """
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
     expected_yaml_instance = YAML(OrderedDict([('pipelines', [OrderedDict([('name', 'pytest'), ('dirs', [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]), OrderedDict([('path', '/bar_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]), OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])]), OrderedDict([('name', 'pylint'), ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope', True)])])])])]))
+    assert is_pipelines_config_valid(yaml_pipelines) == True
+    assert yaml_pipelines == expected_yaml_instance
+
+def test_read_valid_implicit_full_blown_pipelines_config():
+    yaml_pipelines_config = """
+    pipelines:
+    - name: pytest
+      dirs:
+      - path:       /foo_dir
+        full-scope: yes
+      - path:       /bar_dir
+      files:
+      - path:       foo_file.py
+        full-scope: yes
+      - path:       bar_file.py
+    - name: pylint
+      dirs:
+      - path:       /baz_dir
+      files:
+      - path:       baz_file.ini
+        full-scope: yes
+    """
+    yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
+    expected_yaml_instance = YAML(OrderedDict([('pipelines', [OrderedDict([('name', 'pytest'), ('dirs', [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]), OrderedDict([('path', '/bar_dir')])]), ('files', [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]), OrderedDict([('path', 'bar_file.py')])])]), OrderedDict([('name', 'pylint'), ('dirs', [OrderedDict([('path', '/baz_dir')])]), ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope', True)])])])])]))
     assert is_pipelines_config_valid(yaml_pipelines) == True
     assert yaml_pipelines == expected_yaml_instance
 
