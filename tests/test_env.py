@@ -1,10 +1,19 @@
 from tia.env import is_ci
+from pytest import mark
 
-def test_is_some_ci(monkeypatch):
-    monkeypatch.setenv('CIRCLE_CI', '')
-    monkeypatch.setenv('GITLAB_CI', '')
-    monkeypatch.setenv('JENKINS_URL', '')
-    monkeypatch.setenv('TRAVIS', '')
+@mark.parametrize("ci_env_var", [
+    'APPVEYOR',
+    'CIRCLE_CI',
+    'DRONE',
+    'GITLAB_CI',
+    'JENKINS_URL',
+    'SCRUTINIZER',
+    'SEMAPHORE',
+    'SHIPPABLE',
+    'TRAVIS',
+])
+def test_is_some_ci(monkeypatch, ci_env_var):
+    monkeypatch.setenv(ci_env_var, '')
     assert is_ci()
 
 def test_is_no_ci():
