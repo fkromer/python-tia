@@ -16,6 +16,7 @@ mypy = '*'
 sphinx = '>=1.7.9'
 alabaster = '>=0.7.11'
 python-taint = "*"
+jupyterlab = "*"
 
 [packages]
 python-tia = {editable = true, path = "."}
