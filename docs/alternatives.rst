@@ -3,80 +3,27 @@
 Potential alternatives to `python-tia`
 ======================================
 
-This section summarizes the evaluation of Python packages which could potentially have been used instead of `python-tia`
+This section summarizes the evaluation of Python packages (listed in alphabetic order) which could potentially have been used instead of `python-tia`
 and packages which could be used to implement `python-tia` s features.
-At time of writing (August 2018) existing package provide single but not all required features.
+At time of writing (last update: October 2018) existing packages provide a subset but not all required features.
 The functionality is not provided in a generic way, tightly coupled to the Python language
 and a specific Python test runner (`pytest` and `nose`).
 The packages implement single features sometimes using very different approaches which
 are used as design input for the implementation in `python-tia`.
+Note because almost all alternatives depend on/are using coverage.py for coverage mapping:
+At time of project initializations coverage.py did not offer it's `Who tests what`_
+(coverage data on a per test basis) feature but accumulated coverage data (coverage on per test run basis).
 
-pytest-testmon
---------------
+.. _Who tests what: https://nedbatchelder.com/blog/201810/who_tests_what_is_here.html
 
-Sources: `pytest-testmon (github)`_
+pytest-incremental
+------------------
 
-Package: `pytest-testmon (pypi)`_
-
-Evaluation result: No option due to `pytest` test runner dependency.
-
-`pytest-testmon` is a `pytest` plugin which automatically selects and re-executes only tests affected by recent changes.
-File scope changes are determined based on hash using `hashlib` and `zlib.adler32()`. `ast` is used to generate Python language aware change interpretation.
-For coverage tracking `coveragpy` is used. Subprocess coverage tracking requires manual installation of `coverage-pth`.
-The standard lib module `ast` is used to create an abstract representation of the source code as input for 
-`pytest-testmon` can be used with `pytest-watch` to trigger its execution automatically.
-
-.. _pytest-testmon (github): https://github.com/tarpas/pytest-testmon
-.. _pytest-testmon (pypi): https://pypi.org/project/pytest-testmon
-
-when-changed
-------------
-
-Sources: `when-changed (github)`_
-
-Evaluation result: No option due to limited capabilities.
-
-*when-changed* is a command line tool which executes commands when a directories or files have changed.
-File changes are detected continuously using `watchdog (github)`_ :code:`class watchdog.events.FileSystemEventHandler()`
-(https://github.com/joh/when-changed/blob/master/whenchanged/whenchanged.py#L36) and
-:code:`watchdog.observers.Observer()`.
-
-.. _when-changed (github): https://github.com/joh/when-changed
-.. _watchdog (github): https://github.com/gorakhargosh/watchdog
-
-watchdog
---------
-
-Sources: `watchdog (github)`_
-
-Documentation: `watchdog (docs)`_
-
-Package: `watchdog (pypi)`_
-
-*watchdog* provides various filesystem observers: an OS native filesystem observer (https://pythonhosted.org/watchdog/api.html#module-watchdog.observers),
-a polling observer (https://pythonhosted.org/watchdog/api.html#module-watchdog.observers.polling), etc.
-Observers trigger event handlers (https://pythonhosted.org/watchdog/api.html#event-handler-classes)
-in case of various filesystem events (https://pythonhosted.org/watchdog/api.html#event-classes).
-
-.. _watchdog (docs): https://pythonhosted.org/watchdog
-.. _watchdog (github): https://github.com/gorakhargosh/watchdog
-.. _watchdog (pypi): https://pypi.org/project/watchdog
-
-pytest-picked
--------------
-
-Sources: `pytest-picked (github)`_
-
-Package: `pytest-picked (pypi)`_
-
-Evaluation result: No option due to *pytest* test runner dependency.
-
-`pytest-picked` is a `pytest` plugin which makes use of `git`. It does not create a *coverage map* and
-*impact map*. Instead it uses :code:`git status --short` (`git` wrapped via `subprocess`) to
-determine test files and folders which have been changed locally.
-
-.. _pytest-picked (github): https://github.com/anapaulagomes/pytest-picked
-.. _pytest-picked (pypi): https://pypi.org/project/pytest-picked
+looks for imports recursively to find dependencies (using AST) [caveats](https://pytest-incremental.readthedocs.io/runner.html#caveats):
+* only modules imported with `import` are detected
+* modules not explicitly imported but used at run-time
+* monkey patched modules are not detected
+* dependency cycles in imports may affect detection in a bad way
 
 pytest-knows
 ------------
@@ -99,6 +46,150 @@ After execution the databaes is closed via `pytest` hook :code:`pytest_unconfigu
 
 .. _ptknows (github): https://github.com/mapix/ptknows
 .. _pytest-knows (pypi): https://pypi.org/project/pytest-knows
+
+pytest-picked
+-------------
+
+Sources: `pytest-picked (github)`_
+
+Package: `pytest-picked (pypi)`_
+
+Evaluation result: No option due to *pytest* test runner dependency.
+
+`pytest-picked` is a `pytest` plugin which makes use of `git`. It does not create a *coverage map* and
+*impact map*. Instead it uses :code:`git status --short` (`git` wrapped via `subprocess`) to
+determine test files and folders which have been changed locally.
+
+.. _pytest-picked (github): https://github.com/anapaulagomes/pytest-picked
+.. _pytest-picked (pypi): https://pypi.org/project/pytest-picked
+
+pytest-testmon
+--------------
+
+Sources: `pytest-testmon (github)`_
+
+Package: `pytest-testmon (pypi)`_
+
+Evaluation result: No option due to `pytest` test runner dependency.
+
+`pytest-testmon` is a `pytest` plugin which automatically selects and re-executes only tests affected by recent changes.
+File scope changes are determined based on hash using `hashlib` and `zlib.adler32()`. `ast` is used to generate Python language aware change interpretation.
+For coverage tracking `coveragpy` is used. Subprocess coverage tracking requires manual installation of `coverage-pth`.
+The standard lib module `ast` is used to create an abstract representation of the source code as input for 
+`pytest-testmon` can be used with `pytest-watch` to trigger its execution automatically.
+
+blog article about why testmon moved from file change time to hash approach and distributed test extecution: https://medium.com/@boxed/vastly-faster-python-integration-tests-9d8106b3693c
+
+.. _pytest-testmon (github): https://github.com/tarpas/pytest-testmon
+.. _pytest-testmon (pypi): https://pypi.org/project/pytest-testmon
+
+smother
+-------
+
+**Lead developer**: `Chris Beaumont`_ (Netflix)
+
+.. _Chris Beaumont: https://github.com/ChrisBeaumont
+
+**Package**: `PyPI (smother 0.2) <https://pypi.org/project/smother/>`_
+
+**Source code**: `GitHub <https://github.com/ChrisBeaumont/smother>`_
+
+**Documentation**: `Read The Docs <https://smother.readthedocs.io>`_
+
+**Change detection**
+
+VCS based file scope change detection with `subprocess wrapped git`_.
+`VCS`_ `diff`_ and `AST`_ based Python scope sub-file change detection.
+(`Intervals`_ represent code regions.)
+
+.. _subprocess wrapped git: https://github.com/ChrisBeaumont/smother/blob/master/smother/git.py
+.. _VCS: https://github.com/ChrisBeaumont/smother/blob/master/smother/git.py
+.. _diff: https://github.com/ChrisBeaumont/smother/blob/master/smother/diff.py
+.. _AST: https://github.com/ChrisBeaumont/smother/blob/master/smother/python.py
+.. _Intervals: https://github.com/ChrisBeaumont/smother/blob/master/smother/interval.py
+
+**Semantic mapping**
+
+No semantic mapping. (Smother is limited to single test runner run.)
+
+**Pipeline execution**
+
+No pipeline execution. (Smother is a wrapper for coverage.py and doesn't execute pipelines.)
+
+**Coverage mapping**
+
+Test runner integration based generation of coverage.py test coverage data with
+`pytest plugin`_ or `nose plugin`_. Per test based coverage data is stored in `smother files`_.
+
+.. _pytest plugin: https://github.com/ChrisBeaumont/smother/blob/master/smother/pytest_plugin.py
+.. _nose plugin: https://github.com/ChrisBeaumont/smother/blob/master/smother/nose_plugin.py
+.. _smother files: https://github.com/ChrisBeaumont/smother/blob/master/smother/control.py
+
+**Impact mapping**
+
+The *coverage mapping* is `inverted` into *impact mapping* for `reporting`_ only.
+(Smother is a wrapper for coverage.py and doesn't support pipeline execution.)
+
+.. _inverted: https://github.com/ChrisBeaumont/smother/blob/master/smother/control.py
+.. _reporting: https://github.com/ChrisBeaumont/smother/blob/master/smother/cli.py
+
+**History**
+
+   *The initial codebase that smother was designed for took nearly 24 hours of CPU time to run its 11K tests.*
+
+   --Chris Beaumont (`Smother - Why?`_)
+
+.. _Smother - Why?: https://github.com/chrisbeaumont/smother#why
+
+"testimpact" script
+-------------------
+
+Sources: `samplemod (github)`_
+
+Paul Hammant presented a proof of concept script for TIA in his `blog post about samplemod`_ "Reducing Test Times by Only Running Impacted Tests - Python Edition".
+The script :code:`testimpact.sh` (https://github.com/paul-hammant/samplemod/blob/master/testimpact.sh) determines the test files using
+:code:`ack` (https://github.com/paul-hammant/samplemod/blob/master/testimpact.sh#L7), runs every test with :code:`nosetest`
+(https://github.com/paul-hammant/samplemod/blob/master/testimpact.sh#L15), determines which production code is executed by each test and
+writes the *coverage map* into meta data directory `meta/` (directory :code:`meta/tests` (https://github.com/paul-hammant/samplemod/tree/master/meta/tests)
+and :code:`meta/tests2` (https://github.com/paul-hammant/samplemod/tree/master/meta/tests2).
+The resulting *impact map* (production code vs. test code which executes the production code) ends up in :code:`meta/impact-map.txt`
+(https://github.com/paul-hammant/samplemod/blob/master/meta/impact-map.txt).
+
+.. _samplemod (github): https://github.com/paul-hammant/samplemod
+.. _blog post about samplemod: https://paulhammant.com/2015/01/18/reducing-test-times-by-only-running-impacted-tests-python-edition
+
+watchdog
+--------
+
+Sources: `watchdog (github)`_
+
+Documentation: `watchdog (docs)`_
+
+Package: `watchdog (pypi)`_
+
+*watchdog* provides various filesystem observers: an OS native filesystem observer (https://pythonhosted.org/watchdog/api.html#module-watchdog.observers),
+a polling observer (https://pythonhosted.org/watchdog/api.html#module-watchdog.observers.polling), etc.
+Observers trigger event handlers (https://pythonhosted.org/watchdog/api.html#event-handler-classes)
+in case of various filesystem events (https://pythonhosted.org/watchdog/api.html#event-classes).
+
+.. _watchdog (docs): https://pythonhosted.org/watchdog
+.. _watchdog (github): https://github.com/gorakhargosh/watchdog
+.. _watchdog (pypi): https://pypi.org/project/watchdog
+
+when-changed
+------------
+
+Sources: `when-changed (github)`_
+
+Evaluation result: No option due to limited capabilities.
+
+*when-changed* is a command line tool which executes commands when a directories or files have changed.
+File changes are detected continuously using `watchdog (github)`_ :code:`class watchdog.events.FileSystemEventHandler()`
+(https://github.com/joh/when-changed/blob/master/whenchanged/whenchanged.py#L36) and
+:code:`watchdog.observers.Observer()`.
+
+.. _when-changed (github): https://github.com/joh/when-changed
+.. _watchdog (github): https://github.com/gorakhargosh/watchdog
 
 nose-knows
 ----------
@@ -125,20 +216,3 @@ In "input mode" the *coverage map* (`.knows` file) is used to generate the *impa
 .. _trace: https://docs.python.org/2/library/trace.html
 .. _nose-knows (github): https://github.com/eventbrite/nose-knows 
 .. _nose-knows (pypi): https://pypi.org/project/nose-knows
-
-"testimpact" script
--------------------
-
-Sources: `samplemod (github)`_
-
-Paul Hammant presented a proof of concept script for TIA in his `blog post about samplemod`_ "Reducing Test Times by Only Running Impacted Tests - Python Edition".
-The script :code:`testimpact.sh` (https://github.com/paul-hammant/samplemod/blob/master/testimpact.sh) determines the test files using
-:code:`ack` (https://github.com/paul-hammant/samplemod/blob/master/testimpact.sh#L7), runs every test with :code:`nosetest`
-(https://github.com/paul-hammant/samplemod/blob/master/testimpact.sh#L15), determines which production code is executed by each test and
-writes the *coverage map* into meta data directory `meta/` (directory :code:`meta/tests` (https://github.com/paul-hammant/samplemod/tree/master/meta/tests)
-and :code:`meta/tests2` (https://github.com/paul-hammant/samplemod/tree/master/meta/tests2).
-The resulting *impact map* (production code vs. test code which executes the production code) ends up in :code:`meta/impact-map.txt`
-(https://github.com/paul-hammant/samplemod/blob/master/meta/impact-map.txt).
-
-.. _samplemod (github): https://github.com/paul-hammant/samplemod
-.. _blog post about samplemod: https://paulhammant.com/2015/01/18/reducing-test-times-by-only-running-impacted-tests-python-edition
