@@ -1,5 +1,9 @@
-# CI environmen detection considers CIs CircleCi, GitLab CI, Jenkins, Travis
-# with corresponding ENV vars at time of writing (27. October 2018)
+# CI environment detection via corresponding ENV vars at time of writing (31. October 2018)
+#
+# Not considered yet:
+# - Azure Pipelines: https://docs.microsoft.com/en-us/azure/devops/pipelines
+# - Buildbot: https://buildbot.net/
+# - CumulusCI: https://github.com/SFDO-Tooling/CumulusCI
 
 from os import getenv
 
@@ -11,8 +15,6 @@ def is_ci() -> bool:
         return True
     else:
         return False
-
-# Buildbot and CumulusCI other choices
 
 def _is_appveyor_ci() -> bool:
     # APPVEYOR=True, CI=True (both true on Ubuntu image)
