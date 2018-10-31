@@ -1,7 +1,6 @@
 # CI environment detection via corresponding ENV vars at time of writing (31. October 2018)
 #
 # Not considered yet:
-# - Azure Pipelines: https://docs.microsoft.com/en-us/azure/devops/pipelines
 # - Buildbot: https://buildbot.net/
 # - CumulusCI: https://github.com/SFDO-Tooling/CumulusCI
 
@@ -9,9 +8,10 @@ from os import getenv
 
 def is_ci() -> bool:
     #pylint: disable=simplifiable-if-statement, too-many-boolean-expressions
-    if (_is_appveyor_ci() or _is_circle_ci() or _is_drone_ci() or
-            _is_gitlab_ci() or _is_jenkins_ci() or _is_scrutinizer_ci() or
-            _is_semaphore_ci() or _is_shippable_ci() or _is_travis_ci()):
+    if (_is_appveyor_ci() or _is_azure_ci() or _is_circle_ci() or
+            _is_drone_ci() or _is_gitlab_ci() or _is_jenkins_ci() or
+            _is_scrutinizer_ci() or _is_semaphore_ci() or _is_shippable_ci()
+            or _is_travis_ci()):
         return True
     else:
         return False
@@ -20,6 +20,12 @@ def _is_appveyor_ci() -> bool:
     # APPVEYOR=True, CI=True (both true on Ubuntu image)
     # https://www.appveyor.com/docs/environment-variables/
     ci_env_var: str = 'APPVEYOR'
+    return _is_env_set(ci_env_var)
+
+def _is_azure_ci() -> bool:
+    # TF_BUILD=True
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=vsts#system-variables
+    ci_env_var: str = 'TF_BUILD'
     return _is_env_set(ci_env_var)
 
 def _is_circle_ci() -> bool:

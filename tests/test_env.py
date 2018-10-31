@@ -11,6 +11,7 @@ from pytest import mark
     'SEMAPHORE',
     'SHIPPABLE',
     'TRAVIS',
+    'TF_BUILD',
 ])
 def test_is_some_ci(monkeypatch, ci_env_var):
     monkeypatch.setenv(ci_env_var, '')
