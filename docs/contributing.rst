@@ -24,6 +24,12 @@ Exploratory development using `jupyter lab`.
 
    $ jupyter lab
 
+Merge explored functionality into IDE of your choice (e.g. `vim`, note: no project specific `.vimrc` provided).
+
+.. code-block:: python
+
+   $ vim
+
 Run `tox` environments (`pytest`, `mypy`, etc. refer to `tox.ini`) relevant during development.
 
 .. code-block:: python
