@@ -26,8 +26,8 @@ def read_and_validate_config(strictyaml_config: str) -> YAML:
 def is_pipelines_config_valid(strictyaml_pipelines: YAML) -> YAML:
     pipelines_schema = Map({"pipelines": Seq(Map({
         "name": Str(),
-        Optional("dirs"): Seq(Map({"path": Str(), Optional("full-scope"): Bool()})),
-        Optional("files"): Seq(Map({"path": Str(), Optional("full-scope"): Bool()}))
+        Optional("dirs"): Seq(Map({"path": Str(), Optional("full-scope", default=False): Bool()})),
+        Optional("files"): Seq(Map({"path": Str(), Optional("full-scope", default=False): Bool()}))
         }))})
     try:
         strictyaml_pipelines.revalidate(pipelines_schema)

@@ -20,7 +20,7 @@ jupyterlab = "*"
 
 [packages]
 python-tia = {editable = true, path = "."}
-strictyaml = "*"
+strictyaml = '>=0.15.1'
 
 [requires]
 python_version = "3.6"
