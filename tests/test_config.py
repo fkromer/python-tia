@@ -1,13 +1,9 @@
-from tia.config import (
-    read_file,
-    read_and_validate_config,
-    is_pipelines_config_valid,
-    ConfigError,
-    CONFIG_FILE_NAME
-)
+from tia.config import (read_file, read_and_validate_config, is_pipelines_config_valid, ConfigError,
+                        CONFIG_FILE_NAME)
 from pytest import raises
 from strictyaml import YAML
 from collections import OrderedDict
+
 
 def test_reading_existing_valid_config_file_returns_string(tmpdir):
     cf = tmpdir.mkdir("subdir").join(CONFIG_FILE_NAME)
@@ -21,6 +17,7 @@ def test_reading_existing_valid_config_file_returns_string(tmpdir):
     file_path = str(cf)
     assert read_file(file_path) == expected_str
 
+
 def test_reading_existing_invalid_config_file_raises_error(tmpdir):
     invalid_config_file = "tia.ini"
     cf = tmpdir.mkdir("subdir").join(invalid_config_file)
@@ -31,17 +28,20 @@ def test_reading_existing_invalid_config_file_raises_error(tmpdir):
     with raises(ConfigError):
         assert read_file(file_path) == expected_str
 
+
 def test_reading_non_existing_config_file_raises_exception():
     file_path = "/nonexisting/" + CONFIG_FILE_NAME
     expected_str = "irrelevant"
     with raises(FileNotFoundError):
         assert read_file(file_path) == expected_str
 
+
 def test_read_valid_parent_key_config():
     yaml_config = """
     pipelines:
     """
     assert read_and_validate_config(yaml_config) == YAML(OrderedDict([('pipelines', '')]))
+
 
 def test_read_valid_explicit_full_blown_pipelines_config():
     yaml_pipelines_config = """
@@ -68,9 +68,25 @@ def test_read_valid_explicit_full_blown_pipelines_config():
         full-scope: yes
     """
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
-    expected_yaml_instance = YAML(OrderedDict([('pipelines', [OrderedDict([('name', 'pytest'), ('type', 'test'), ('dirs', [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]), OrderedDict([('path', '/bar_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]), OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])]), OrderedDict([('name', 'pylint'), ('type', 'analyzer'), ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope', True)])])])])]))
+    expected_yaml_instance = YAML(
+        OrderedDict([('pipelines', [
+            OrderedDict([('name', 'pytest'), ('type', 'test'),
+                         ('dirs', [
+                             OrderedDict([('path', '/foo_dir'), ('full-scope', True)]),
+                             OrderedDict([('path', '/bar_dir'), ('full-scope', False)])
+                         ]),
+                         ('files', [
+                             OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]),
+                             OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])
+                         ])]),
+            OrderedDict([('name', 'pylint'), ('type', 'analyzer'),
+                         ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]),
+                         ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope',
+                                                                            True)])])])
+        ])]))
     assert is_pipelines_config_valid(yaml_pipelines) == True
     assert yaml_pipelines == expected_yaml_instance
+
 
 def test_read_valid_implicit_full_blown_pipelines_config():
     yaml_pipelines_config = """
@@ -94,9 +110,25 @@ def test_read_valid_implicit_full_blown_pipelines_config():
         full-scope: yes
     """
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
-    expected_yaml_instance = YAML(OrderedDict([('pipelines', [OrderedDict([('name', 'pytest'), ('type', 'test'), ('dirs', [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]), OrderedDict([('path', '/bar_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]), OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])]), OrderedDict([('name', 'pylint'), ('type', 'analyzer'), ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope', True)])])])])]))
+    expected_yaml_instance = YAML(
+        OrderedDict([('pipelines', [
+            OrderedDict([('name', 'pytest'), ('type', 'test'),
+                         ('dirs', [
+                             OrderedDict([('path', '/foo_dir'), ('full-scope', True)]),
+                             OrderedDict([('path', '/bar_dir'), ('full-scope', False)])
+                         ]),
+                         ('files', [
+                             OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]),
+                             OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])
+                         ])]),
+            OrderedDict([('name', 'pylint'), ('type', 'analyzer'),
+                         ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]),
+                         ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope',
+                                                                            True)])])])
+        ])]))
     assert is_pipelines_config_valid(yaml_pipelines) == True
     assert yaml_pipelines == expected_yaml_instance
+
 
 def test_read_valid_single_pipeline_with_dirs_only_config():
     yaml_pipelines_config = """
@@ -110,14 +142,17 @@ def test_read_valid_single_pipeline_with_dirs_only_config():
         full-scope: no
     """
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
-    expected_yaml_instance = YAML(OrderedDict([('pipelines',
-                                                [OrderedDict([('name', 'pytest'),
-                                                              ('type', 'test'),
-                                                              ('dirs',
-                                                               [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]),
-                                                                OrderedDict([('path', '/bar_dir'), ('full-scope', False)])])])])]))
+    expected_yaml_instance = YAML(
+        OrderedDict([('pipelines', [
+            OrderedDict([('name', 'pytest'), ('type', 'test'),
+                         ('dirs', [
+                             OrderedDict([('path', '/foo_dir'), ('full-scope', True)]),
+                             OrderedDict([('path', '/bar_dir'), ('full-scope', False)])
+                         ])])
+        ])]))
     assert is_pipelines_config_valid(yaml_pipelines) == True
     assert yaml_pipelines == expected_yaml_instance
+
 
 def test_read_valid_single_pipeline_with_files_only_config():
     yaml_pipelines_config = """
@@ -131,12 +166,14 @@ def test_read_valid_single_pipeline_with_files_only_config():
         full-scope: no
     """
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
-    expected_yaml_instance = YAML(OrderedDict([('pipelines',
-                                                [OrderedDict([('name', 'pytest'),
-                                                              ('type', 'test'),
-                                                              ('files',
-                                                               [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]),
-                                                                OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])])])]))
+    expected_yaml_instance = YAML(
+        OrderedDict([('pipelines', [
+            OrderedDict([('name', 'pytest'), ('type', 'test'),
+                         ('files', [
+                             OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]),
+                             OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])
+                         ])])
+        ])]))
     assert is_pipelines_config_valid(yaml_pipelines) == True
     assert yaml_pipelines == expected_yaml_instance
 
