@@ -1,5 +1,5 @@
 from pathlib import Path
-from strictyaml import YAML, Map, Seq, Any, Bool, load, Str, Optional
+from strictyaml import YAML, Map, Seq, Any, Bool, load, Str, Optional, Enum
 from strictyaml.exceptions import YAMLValidationError
 
 CONFIG_FILE_NAME: str = 'tia.yaml'
@@ -26,6 +26,7 @@ def read_and_validate_config(strictyaml_config: str) -> YAML:
 def is_pipelines_config_valid(strictyaml_pipelines: YAML) -> YAML:
     pipelines_schema = Map({"pipelines": Seq(Map({
         "name": Str(),
+        "type": Enum(["test", "analyzer"]),
         Optional("dirs"): Seq(Map({"path": Str(), Optional("full-scope", default=False): Bool()})),
         Optional("files"): Seq(Map({"path": Str(), Optional("full-scope", default=False): Bool()}))
         }))})

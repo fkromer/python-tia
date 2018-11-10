@@ -47,6 +47,7 @@ def test_read_valid_explicit_full_blown_pipelines_config():
     yaml_pipelines_config = """
     pipelines:
     - name: pytest
+      type: test
       dirs:
       - path:       /foo_dir
         full-scope: yes
@@ -58,6 +59,7 @@ def test_read_valid_explicit_full_blown_pipelines_config():
       - path:       bar_file.py
         full-scope: no
     - name: pylint
+      type: analyzer
       dirs:
       - path:       /baz_dir
         full-scope: no
@@ -66,7 +68,7 @@ def test_read_valid_explicit_full_blown_pipelines_config():
         full-scope: yes
     """
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
-    expected_yaml_instance = YAML(OrderedDict([('pipelines', [OrderedDict([('name', 'pytest'), ('dirs', [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]), OrderedDict([('path', '/bar_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]), OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])]), OrderedDict([('name', 'pylint'), ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope', True)])])])])]))
+    expected_yaml_instance = YAML(OrderedDict([('pipelines', [OrderedDict([('name', 'pytest'), ('type', 'test'), ('dirs', [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]), OrderedDict([('path', '/bar_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]), OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])]), OrderedDict([('name', 'pylint'), ('type', 'analyzer'), ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope', True)])])])])]))
     assert is_pipelines_config_valid(yaml_pipelines) == True
     assert yaml_pipelines == expected_yaml_instance
 
@@ -74,6 +76,7 @@ def test_read_valid_implicit_full_blown_pipelines_config():
     yaml_pipelines_config = """
     pipelines:
     - name: pytest
+      type: test
       dirs:
       - path:       /foo_dir
         full-scope: yes
@@ -83,6 +86,7 @@ def test_read_valid_implicit_full_blown_pipelines_config():
         full-scope: yes
       - path:       bar_file.py
     - name: pylint
+      type: analyzer
       dirs:
       - path:       /baz_dir
       files:
@@ -90,7 +94,7 @@ def test_read_valid_implicit_full_blown_pipelines_config():
         full-scope: yes
     """
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
-    expected_yaml_instance = YAML(OrderedDict([('pipelines', [OrderedDict([('name', 'pytest'), ('dirs', [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]), OrderedDict([('path', '/bar_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]), OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])]), OrderedDict([('name', 'pylint'), ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope', True)])])])])]))
+    expected_yaml_instance = YAML(OrderedDict([('pipelines', [OrderedDict([('name', 'pytest'), ('type', 'test'), ('dirs', [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]), OrderedDict([('path', '/bar_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]), OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])]), OrderedDict([('name', 'pylint'), ('type', 'analyzer'), ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]), ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope', True)])])])])]))
     assert is_pipelines_config_valid(yaml_pipelines) == True
     assert yaml_pipelines == expected_yaml_instance
 
@@ -98,6 +102,7 @@ def test_read_valid_single_pipeline_with_dirs_only_config():
     yaml_pipelines_config = """
     pipelines:
     - name: pytest
+      type: test
       dirs:
       - path:       /foo_dir
         full-scope: yes
@@ -107,6 +112,7 @@ def test_read_valid_single_pipeline_with_dirs_only_config():
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
     expected_yaml_instance = YAML(OrderedDict([('pipelines',
                                                 [OrderedDict([('name', 'pytest'),
+                                                              ('type', 'test'),
                                                               ('dirs',
                                                                [OrderedDict([('path', '/foo_dir'), ('full-scope', True)]),
                                                                 OrderedDict([('path', '/bar_dir'), ('full-scope', False)])])])])]))
@@ -117,6 +123,7 @@ def test_read_valid_single_pipeline_with_files_only_config():
     yaml_pipelines_config = """
     pipelines:
     - name: pytest
+      type: test
       files:
       - path:       foo_file.py
         full-scope: yes
@@ -126,6 +133,7 @@ def test_read_valid_single_pipeline_with_files_only_config():
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
     expected_yaml_instance = YAML(OrderedDict([('pipelines',
                                                 [OrderedDict([('name', 'pytest'),
+                                                              ('type', 'test'),
                                                               ('files',
                                                                [OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]),
                                                                 OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])])])])]))
@@ -134,9 +142,13 @@ def test_read_valid_single_pipeline_with_files_only_config():
 
 
 def test_read_invalid_pipelines_config():
+    """full-scope is not allowed in pipelines[0].dirs and
+    pylint should be declared to be an analzyer pipeline
+    (which of course cannot be detected during validation)."""
     yaml_pipelines_config = """
     pipelines:
     - name: pytest
+      type: test
       dirs:
       - full-scope: yes
       - path:       /bar_dir
@@ -144,6 +156,7 @@ def test_read_invalid_pipelines_config():
       - path:       bar_file.py
         full-scope: no
     - name: pylint
+      type: analayzer
       dirs:
       - path:       /baz_dir
         full-scope: no
