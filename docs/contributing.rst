@@ -24,6 +24,12 @@ Exploratory development using `jupyter lab`.
 
    $ jupyter lab
 
+Exploratory SQLite database development (coverage.py coverage data) using `sqlitebrowser`.
+
+   $ sudo apt-get install sqlitebrowser
+   $ pipenv run tox -e pytest
+   $ sqlitebrowser .coverage
+
 Merge explored functionality into IDE of your choice (e.g. `vim`, note: no project specific `.vimrc` provided).
 
 .. code-block:: python
