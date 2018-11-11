@@ -38,7 +38,7 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
-#.coverage
+.coverage
 .coverage.*
 .cache
 nosetests.xml
@@ -46,6 +46,9 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+
+# allow coverage data for own tests
+!tests/data/.coverage
 
 # Translations
 *.mo
@@ -102,3 +105,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Visual Studio Code settings
+.vscode
