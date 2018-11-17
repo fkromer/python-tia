@@ -1,8 +1,8 @@
 from tia.cov import (
     database_cursor,
-    _get_file_table,
-    _get_context_table,
-    _get_line_table,
+    get_file_table,
+    get_context_table,
+    get_line_table,
     FileTableRow,
     ContextTableRow,
     LineTableRow,
@@ -13,7 +13,7 @@ def test_get_file_table_rows():
     # File paths depend on project location and development machine where the
     # coverage database used as input has been generated (/home/fk/github).
     with database_cursor('tests/data/.coverage') as cursor:
-        production_file_list = [row for row in _get_file_table(cursor)]
+        production_file_list = [row for row in get_file_table(cursor)]
     assert production_file_list == [
         FileTableRow(file_id=1, path='/home/fk/github/python-tia/tia/__init__.py'),
         FileTableRow(file_id=2, path='/home/fk/github/python-tia/tia/config.py'),
@@ -24,7 +24,7 @@ def test_get_file_table_rows():
 def test_get_context_table_rows():
     # TODO: make expected output compatible with others than mine workstations
     with database_cursor('tests/data/.coverage') as cursor:
-        test_list = [row for row in _get_context_table(cursor)]
+        test_list = [row for row in get_context_table(cursor)]
     assert test_list == [
         ContextTableRow(context_id=1, context=''),
         ContextTableRow(
@@ -51,7 +51,7 @@ def test_get_context_table_rows():
 
 def test_get_line_table_rows():
     with database_cursor('tests/data/.coverage') as cursor:
-        mapping_list = [row for row in _get_line_table(cursor)]
+        mapping_list = [row for row in get_line_table(cursor)]
     assert mapping_list == [
         LineTableRow(file_id=1, context_id=1, lineno=1),
         LineTableRow(file_id=2, context_id=1, lineno=1),

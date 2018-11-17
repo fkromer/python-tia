@@ -34,14 +34,14 @@ def database_cursor(database_path: str) -> Iterator[Cursor]:
         connection.close()
 
 
-def _get_file_table(cursor: Cursor) -> Iterator[FileTableRow]:
+def get_file_table(cursor: Cursor) -> Iterator[FileTableRow]:
     cursor.execute("SELECT * FROM file")
     rows = cursor.fetchall()
     for row in rows:
         yield FileTableRow(*row)
 
 
-def _get_context_table(cursor: Cursor) -> Iterator[ContextTableRow]:
+def get_context_table(cursor: Cursor) -> Iterator[ContextTableRow]:
     # TODO: Clarify which dynamic contexts are possible. Provide info about
     # required post processing of content like e.g.:
     # (1, '')
@@ -53,7 +53,7 @@ def _get_context_table(cursor: Cursor) -> Iterator[ContextTableRow]:
         yield ContextTableRow(*row)
 
 
-def _get_line_table(cursor: Cursor) -> Iterator[LineTableRow]:
+def get_line_table(cursor: Cursor) -> Iterator[LineTableRow]:
     cursor.execute("SELECT * FROM line")
     rows = cursor.fetchall()
     for row in rows:
