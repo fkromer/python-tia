@@ -1,0 +1,21 @@
+pipelines:
+- name: pytest
+  type: test
+  dirs:
+  - path:       /foo_dir
+    full-scope: yes
+  - path:       /bar_dir
+    full-scope: no
+  files:
+  - path:       foo_file.py
+    full-scope: yes
+  - path:       bar_file.py
+    full-scope: no
+- name: pylint
+  type: analyzer
+  dirs:
+  - path:       /baz_dir
+    full-scope: no
+  files:
+  - path:       baz_file.ini
+    full-scope: yes
