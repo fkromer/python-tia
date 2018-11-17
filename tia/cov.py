@@ -7,17 +7,17 @@ from contextlib import contextmanager
 from typing import NamedTuple, Iterator
 
 
-class FileTableRow(NamedTuple):
+class FileTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
     file_id: int
     path: str
 
 
-class ContextTableRow(NamedTuple):
+class ContextTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
     context_id: int
     context: str
 
 
-class LineTableRow(NamedTuple):
+class LineTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
     file_id: int
     context_id: int
     lineno: int
