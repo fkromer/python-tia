@@ -36,6 +36,11 @@ def is_pipelines_config_valid(strictyaml_pipelines: YAML) -> YAML:
                 Str(),
                 "type":
                 Enum(["test", "analyzer"]),
+                Optional("commands"):
+                Map({
+                    "partial-scope": Str(),
+                    "full-scope": Str()
+                }),
                 Optional("dirs"):
                 Seq(Map({
                     "path": Str(),
