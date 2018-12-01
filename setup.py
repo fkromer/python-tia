@@ -11,6 +11,10 @@ setup(name='python-tia',
       python_requires='>=3.4.0',
       license='GPLv3',
       packages=find_packages(),
+      entry_points='''
+          [console_scripts]
+          tia=tia.cli:cli
+          ''',
       classifiers=[
           'Development Status :: 1 - Planning',
           'Environment :: Console',
