@@ -5,8 +5,7 @@ from tia.cli import cli, ExitCode
 
 import pytest
 
-@pytest.mark.cli
-@pytest.mark.integration
+pytestmark = [pytest.mark.cli, pytest.mark.integration]
 
 
 def test_config_file_existing_and_valid_file_extension():

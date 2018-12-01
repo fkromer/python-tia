@@ -4,6 +4,10 @@ from pytest import raises
 from strictyaml import YAML
 from collections import OrderedDict
 
+import pytest
+
+pytestmark = [pytest.mark.unit, pytest.mark.configuration]
+
 
 def test_reading_existing_valid_config_file_returns_string(tmpdir):
     cf = tmpdir.mkdir("subdir").join(CONFIG_FILE_NAME)

@@ -2,6 +2,11 @@ from tia.env import is_ci
 from pytest import mark
 
 
+import pytest
+
+pytestmark = pytest.mark.unit
+
+
 @mark.parametrize("ci_env_var", [
     'APPVEYOR',
     'CIRCLE_CI',

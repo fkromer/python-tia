@@ -8,6 +8,10 @@ from tia.cov import (
     LineTableRow,
 )
 
+import pytest
+
+pytestmark = [pytest.mark.coveragepy, pytest.mark.unit]
+
 
 def test_get_file_table_rows():
     # File paths depend on project location and development machine where the
