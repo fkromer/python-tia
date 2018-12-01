@@ -4,6 +4,7 @@ from enum import IntEnum
 
 import click
 
+
 class ExitCode(IntEnum):
     ok = 0
     not_ok = 1
@@ -50,7 +51,7 @@ If no production code file is provided with [CODE] the whole impact map \
 def impact(ctx, code, coverage_database):
     print(code)
     print(coverage_database)
-    verbose = ctx.obj['verbose'] # get options from parent command context
+    verbose = ctx.obj['verbose']  # get options from parent command context
     if verbose:
         if code:
             print('Production code file: ', click.format_filename(code))

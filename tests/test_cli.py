@@ -37,7 +37,8 @@ def test_config_file_invalid():
 def test_database_file_existing_and_valid_sqlite3_file():
     runner = CliRunner()
     # valid -c option (configuration file) required
-    result = runner.invoke(cli, ['-v', '-c', 'tests/data/tia.yaml', 'impact', '-d', 'tests/data/.coverage'])
+    result = runner.invoke(
+        cli, ['-v', '-c', 'tests/data/tia.yaml', 'impact', '-d', 'tests/data/.coverage'])
     assert 'Database file: ' and '/tests/data/.coverage' in result.output
     assert result.exit_code == ExitCode.ok
 
@@ -45,7 +46,8 @@ def test_database_file_existing_and_valid_sqlite3_file():
 def test_database_file_nonexisting():
     runner = CliRunner()
     # valid -c option, invalid -d option
-    result = runner.invoke(cli, ['-v', '-c', 'tests/data/tia.yaml', 'impact', '-d', 'docs/.coverage'])
+    result = runner.invoke(cli,
+                           ['-v', '-c', 'tests/data/tia.yaml', 'impact', '-d', 'docs/.coverage'])
     # TODO:
     # assert 'Database file ' and '/python-tia/docs/.coverage is not existing.' in result.stderr
     assert result.exit_code == ExitCode.not_ok
@@ -54,6 +56,8 @@ def test_database_file_nonexisting():
 def test_impact_code():
     runner = CliRunner()
     # valid -c option, valid -d option, valid production code file
-    result = runner.invoke(cli, ['-v', '-c', 'tests/data/tia.yaml', 'impact', '-d', 'tests/data/.coverage', 'tia/config.py'])
+    result = runner.invoke(cli, [
+        '-v', '-c', 'tests/data/tia.yaml', 'impact', '-d', 'tests/data/.coverage', 'tia/config.py'
+    ])
     assert 'Production code file: ' and '/python-tia/tia/config.py' in result.output
     assert result.exit_code == ExitCode.ok

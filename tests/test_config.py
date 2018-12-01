@@ -81,8 +81,10 @@ def test_read_valid_explicit_full_blown_pipelines_config():
     expected_yaml_instance = YAML(
         OrderedDict([('pipelines', [
             OrderedDict([('name', 'pytest'), ('type', 'test'),
-                         ('commands',
-                             OrderedDict([('partial-scope', 'pytest --cov=tia {tests}'), ('full-scope', 'pytest --cov=tia tests')]),
+                         (
+                             'commands',
+                             OrderedDict([('partial-scope', 'pytest --cov=tia {tests}'),
+                                          ('full-scope', 'pytest --cov=tia tests')]),
                          ),
                          ('dirs', [
                              OrderedDict([('path', '/foo_dir'), ('full-scope', True)]),
@@ -93,10 +95,11 @@ def test_read_valid_explicit_full_blown_pipelines_config():
                              OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])
                          ])]),
             OrderedDict([('name', 'pylint'), ('type', 'analyzer'),
-                         ('commands',
-                             OrderedDict([('partial-scope', 'pylint {files}'), ('full-scope', 'pylint tia')]),
-                         ),
-                         ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]),
+                         (
+                             'commands',
+                             OrderedDict([('partial-scope', 'pylint {files}'),
+                                          ('full-scope', 'pylint tia')]),
+                         ), ('dirs', [OrderedDict([('path', '/baz_dir'), ('full-scope', False)])]),
                          ('files', [OrderedDict([('path', 'baz_file.ini'), ('full-scope',
                                                                             True)])])])
         ])]))

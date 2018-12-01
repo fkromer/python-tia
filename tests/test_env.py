@@ -1,7 +1,6 @@
 from tia.env import is_ci
 from pytest import mark
 
-
 import pytest
 
 pytestmark = pytest.mark.unit
