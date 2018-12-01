@@ -6,6 +6,9 @@ from tia.cov import (
     FileTableRow,
     ContextTableRow,
     LineTableRow,
+    get_file_ids,
+    get_context_ids,
+    get_test_name,
 )
 
 import pytest
@@ -13,23 +16,8 @@ import pytest
 pytestmark = [pytest.mark.coveragepy, pytest.mark.unit]
 
 
-def test_get_file_table_rows():
-    # File paths depend on project location and development machine where the
-    # coverage database used as input has been generated (/home/fk/github).
-    with database_cursor('tests/data/.coverage') as cursor:
-        production_file_list = [row for row in get_file_table(cursor)]
-    assert production_file_list == [
-        FileTableRow(file_id=1, path='/home/fk/github/python-tia/tia/__init__.py'),
-        FileTableRow(file_id=2, path='/home/fk/github/python-tia/tia/config.py'),
-        FileTableRow(file_id=3, path='/home/fk/github/python-tia/tia/env.py'),
-    ]
-
-
-def test_get_context_table_rows():
-    # TODO: make expected output compatible with others than mine workstations
-    with database_cursor('tests/data/.coverage') as cursor:
-        test_list = [row for row in get_context_table(cursor)]
-    assert test_list == [
+# corresponding to the content of tests/data/.coverage
+context_table_rows = [
         ContextTableRow(context_id=1, context=''),
         ContextTableRow(
             context_id=2, context='test_reading_existing_valid_config_file_returns_string'),
@@ -53,10 +41,16 @@ def test_get_context_table_rows():
     ]
 
 
-def test_get_line_table_rows():
-    with database_cursor('tests/data/.coverage') as cursor:
-        mapping_list = [row for row in get_line_table(cursor)]
-    assert mapping_list == [
+# corresponding to the content of tests/data/.coverage
+file_table_rows = [
+        FileTableRow(file_id=1, path='/home/fk/github/python-tia/tia/__init__.py'),
+        FileTableRow(file_id=2, path='/home/fk/github/python-tia/tia/config.py'),
+        FileTableRow(file_id=3, path='/home/fk/github/python-tia/tia/env.py'),
+    ]
+
+
+# corresponding to the content of tests/data/.coverage
+line_table_rows = [
         LineTableRow(file_id=1, context_id=1, lineno=1),
         LineTableRow(file_id=2, context_id=1, lineno=1),
         LineTableRow(file_id=2, context_id=1, lineno=2),
@@ -253,3 +247,49 @@ def test_get_line_table_rows():
         LineTableRow(file_id=3, context_id=12, lineno=87),
         LineTableRow(file_id=3, context_id=12, lineno=17),
     ]
+
+
+def test_get_file_table_rows():
+    # File paths depend on project location and development machine where the
+    # coverage database used as input has been generated (/home/fk/github).
+    with database_cursor('tests/data/.coverage') as cursor:
+        production_file_list = [row for row in get_file_table(cursor)]
+    assert production_file_list == file_table_rows
+
+
+def test_get_context_table_rows():
+    # TODO: make expected output compatible with others than mine workstations
+    with database_cursor('tests/data/.coverage') as cursor:
+        test_list = [row for row in get_context_table(cursor)]
+    assert test_list == context_table_rows
+
+
+def test_get_line_table_rows():
+    with database_cursor('tests/data/.coverage') as cursor:
+        mapping_list = [row for row in get_line_table(cursor)]
+    assert mapping_list == line_table_rows
+
+
+def test_get_file_ids():
+    expected_production_code_file_ids = [2,3]
+    file_table_rows = [FileTableRow(file_id=1, path='/home/fk/github/python-tia/tia/__init__.py'),
+        FileTableRow(file_id=2, path='/home/fk/github/python-tia/tia/config.py'),
+        FileTableRow(file_id=3, path='/home/fk/github/python-tia/tia/env.py')]
+    file_id_list = [file_id for file_id in get_file_ids(file_table_rows, ['/home/fk/github/python-tia/tia/config.py', '/home/fk/github/python-tia/tia/env.py'])]
+    assert file_id_list == expected_production_code_file_ids
+
+
+def test_get_context_ids():
+    production_file_ids = [2, 3]
+    for production_file_id in production_file_ids:
+        context_ids = [id for id in get_context_ids(line_table_rows, production_file_id)]
+        # for first id 2 -> longer list of context ids
+        # for second id 3 -> shorter list of context ids
+        assert context_ids == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] or [1, 11, 12]
+
+
+def test_get_test_names():
+    context_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    expected_test_names = ['', 'test_reading_existing_valid_config_file_returns_string', 'test_reading_existing_invalid_config_file_raises_error', 'test_reading_non_existing_config_file_raises_exception', 'test_read_valid_parent_key_config', 'test_read_valid_explicit_full_blown_pipelines_config', 'test_read_valid_implicit_full_blown_pipelines_config', 'test_read_valid_single_pipeline_with_dirs_only_config', 'test_read_valid_single_pipeline_with_files_only_config', 'test_read_invalid_pipelines_config']
+    test_names = [test for test in get_test_name(context_table_rows, context_ids)]
+    assert test_names == expected_test_names
