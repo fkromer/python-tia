@@ -4,33 +4,42 @@ Functionality to access coveragepy v5.03a coverage databases (schema v2).
 
 from sqlite3.dbapi2 import connect, Cursor
 from contextlib import contextmanager
-from typing import NamedTuple, Iterator
-
-
-class FileTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
-    file_id: int
-    path: str
-
-
-class ContextTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
-    context_id: int
-    context: str
-
-
-class LineTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
-    file_id: int
-    context_id: int
-    lineno: int
-
+from typing import NamedTuple, Iterator, Set
 
 Id = int
 Ids = Iterator[Id]
+
+TestReference = str
+Line = int
 
 FilePath = str
 FilePaths = Iterator[FilePath]
 
 TestName = str
 TestNames = Iterator[TestName]
+
+
+class FileTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
+    file_id: Id
+    path: FilePath
+
+
+class ContextTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
+    context_id: Id
+    context: TestReference
+
+
+class LineTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
+    file_id: Id
+    context_id: Id
+    lineno: Line
+
+
+FileTable = Iterator[FileTableRow]
+
+ContextTable = Iterator[ContextTableRow]
+
+LineTable = Iterator[LineTableRow]
 
 
 @contextmanager
@@ -44,14 +53,14 @@ def database_cursor(database_path: str) -> Iterator[Cursor]:
         connection.close()
 
 
-def get_file_table(cursor: Cursor) -> Iterator[FileTableRow]:
+def get_file_table(cursor: Cursor) -> FileTable:
     cursor.execute("SELECT * FROM file")
     rows = cursor.fetchall()
     for row in rows:
         yield FileTableRow(*row)
 
 
-def get_context_table(cursor: Cursor) -> Iterator[ContextTableRow]:
+def get_context_table(cursor: Cursor) -> ContextTable:
     # TODO: Clarify which dynamic contexts are possible. Provide info about
     # required post processing of content like e.g.:
     # (1, '')
@@ -63,14 +72,14 @@ def get_context_table(cursor: Cursor) -> Iterator[ContextTableRow]:
         yield ContextTableRow(*row)
 
 
-def get_line_table(cursor: Cursor) -> Iterator[LineTableRow]:
+def get_line_table(cursor: Cursor) -> LineTable:
     cursor.execute("SELECT * FROM line")
     rows = cursor.fetchall()
     for row in rows:
         yield LineTableRow(*row)
 
 
-def get_file_ids(file_table: Iterator[FileTableRow], file_paths: FilePath) -> Ids:
+def get_file_ids(file_table: FileTable, file_paths: FilePaths) -> Ids:
     # return single element content of generator instead of whole generator
     for file_id, path in file_table:
         for file_path in file_paths:
@@ -78,8 +87,8 @@ def get_file_ids(file_table: Iterator[FileTableRow], file_paths: FilePath) -> Id
                 yield file_id
 
 
-def get_context_ids(line_table: Iterator[LineTableRow], prod_file_id: Id) -> Ids:
-    already_seen_contexts = set()
+def get_context_ids(line_table: LineTable, prod_file_id: Id) -> Ids:
+    already_seen_contexts: Set[Id]  = set()
     for file_id, context_id, _ in line_table:
         if file_id == prod_file_id:
             if context_id not in already_seen_contexts:
