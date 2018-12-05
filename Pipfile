@@ -19,9 +19,9 @@ python-taint = "*"
 jupyterlab = "*"
 coverage = ">=5.0a3"
 yapf = "*"
+pyfunctional = "*"
 
 [packages]
-python-tia = {editable = true, path = "."}
 strictyaml = '>=0.15.3'
 click = "*"
 
