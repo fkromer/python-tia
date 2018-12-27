@@ -1,8 +1,10 @@
-from sys import stderr
-from pathlib import Path
 from enum import IntEnum
+from pathlib import Path
+from sys import stderr
 
 import click
+
+import request
 
 
 class ExitCode(IntEnum):

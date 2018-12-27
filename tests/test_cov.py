@@ -1,17 +1,17 @@
+import pytest
+
 from tia.cov import (
-    database_cursor,
-    get_file_table,
-    get_context_table,
-    get_line_table,
-    FileTableRow,
     ContextTableRow,
+    FileTableRow,
     LineTableRow,
-    get_file_ids,
+    database_cursor,
     get_context_ids,
+    get_context_table,
+    get_file_ids,
+    get_file_table,
+    get_line_table,
     get_test_name,
 )
-
-import pytest
 
 pytestmark = [pytest.mark.coveragepy, pytest.mark.unit]
 

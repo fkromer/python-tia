@@ -1,9 +1,8 @@
 import click
+import pytest
 from click.testing import CliRunner
 
-from tia.cli import cli, ExitCode
-
-import pytest
+from tia.cli import ExitCode, cli
 
 pytestmark = [pytest.mark.cli, pytest.mark.integration]
 

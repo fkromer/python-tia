@@ -2,9 +2,9 @@
 Functionality to access coveragepy v5.03a coverage databases (schema v2).
 """
 
-from sqlite3.dbapi2 import connect, Cursor
 from contextlib import contextmanager
-from typing import NamedTuple, Iterator, Set
+from sqlite3.dbapi2 import Cursor, connect
+from typing import Iterator, NamedTuple, Set
 
 Id = int
 Ids = Iterator[Id]
@@ -88,7 +88,7 @@ def get_file_ids(file_table: FileTable, file_paths: FilePaths) -> Ids:
 
 
 def get_context_ids(line_table: LineTable, prod_file_id: Id) -> Ids:
-    already_seen_contexts: Set[Id]  = set()
+    already_seen_contexts: Set[Id] = set()
     for file_id, context_id, _ in line_table:
         if file_id == prod_file_id:
             if context_id not in already_seen_contexts:

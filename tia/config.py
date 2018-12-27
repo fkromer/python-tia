@@ -1,5 +1,6 @@
 from pathlib import Path
-from strictyaml import YAML, Map, Seq, Any, Bool, load, Str, Optional, Enum
+
+from strictyaml import YAML, Any, Bool, Enum, Map, Optional, Seq, Str, load
 from strictyaml.exceptions import YAMLValidationError
 
 CONFIG_FILE_NAME: str = 'tia.yaml'

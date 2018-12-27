@@ -1,10 +1,16 @@
-from tia.config import (read_file, read_and_validate_config, is_pipelines_config_valid, ConfigError,
-                        CONFIG_FILE_NAME)
-from pytest import raises
-from strictyaml import YAML
 from collections import OrderedDict
 
 import pytest
+from pytest import raises
+from strictyaml import YAML
+
+from tia.config import (
+    CONFIG_FILE_NAME,
+    ConfigError,
+    is_pipelines_config_valid,
+    read_and_validate_config,
+    read_file,
+)
 
 pytestmark = [pytest.mark.unit, pytest.mark.configuration]
 
