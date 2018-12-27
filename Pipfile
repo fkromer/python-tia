@@ -20,6 +20,7 @@ jupyterlab = "*"
 coverage = ">=5.0a3"
 yapf = "*"
 pyfunctional = "*"
+isort = "*"
 
 [packages]
 strictyaml = '>=0.15.3'
