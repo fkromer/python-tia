@@ -25,6 +25,7 @@ isort = "*"
 [packages]
 strictyaml = '>=0.15.3'
 click = "*"
+gitpython = "*"
 
 [requires]
 python_version = "3.6"
