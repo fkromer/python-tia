@@ -4,8 +4,6 @@ from sys import stderr
 
 import click
 
-import request
-
 
 class ExitCode(IntEnum):
     ok = 0
