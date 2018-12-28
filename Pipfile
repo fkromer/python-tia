@@ -19,13 +19,14 @@ python-taint = "*"
 jupyterlab = "*"
 coverage = ">=5.0a3"
 yapf = "*"
-pyfunctional = "*"
 isort = "*"
 
 [packages]
 strictyaml = '>=0.15.3'
 click = "*"
 gitpython = "*"
+pyfunctional = "*"
+python-tia = {editable = true,path = "."}
 
 [requires]
 python_version = "3.6"
