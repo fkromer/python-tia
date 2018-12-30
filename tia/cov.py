@@ -5,38 +5,45 @@ Functionality to access coveragepy v5.03a coverage databases (schema v2).
 from functional import seq
 from typing import Iterator, NamedTuple
 
+from functional.pipeline import Sequence
+
 Id = int
-Ids = Iterator[Id]
+Ids = Sequence  # TODO: of Ids
 
 TestReference = str
 Line = int
-Lines = Iterator[Line]
+Lines = Sequence  # TODO: of Lines
 
 FilePath = str
-FilePaths = Iterator[FilePath]
+FilePaths = Sequence  # TODO: of FilePaths
 
 TestName = str
-TestNames = Iterator[TestName]
+TestNames = Sequence  # TODO: of TestNames
 
 
 class FileTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
     file_id: Id
     path: FilePath
 
-FileTable = Iterator[FileTableRow]
+
+FileTable = Sequence
+
 
 class ContextTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
     context_id: Id
     context: TestReference
 
-ContextTable = Iterator[ContextTableRow]
+
+ContextTable = Sequence
+
 
 class LineTableRow(NamedTuple):  #pylint: disable=too-few-public-methods
     file_id: Id
     context_id: Id
     lineno: Line
 
-LineTable = Iterator[LineTableRow]
+
+LineTable = Sequence
 
 
 def get_file_table(db_path: str) -> FileTable:
