@@ -64,3 +64,11 @@ def test_impact_several_files():
     runner = CliRunner()
     result = runner.invoke(cli, ['-c', 'tests/data/tia.yaml', 'impact', '-d', 'tests/data/.coverage', 'tia/env.py', 'tia/config.py'])
     assert "['test_is_no_ci', 'test_is_some_ci', 'test_read_invalid_pipelines_config', 'test_read_valid_explicit_full_blown_pipelines_config', 'test_read_valid_implicit_full_blown_pipelines_config', 'test_read_valid_parent_key_config', 'test_read_valid_single_pipeline_with_dirs_only_config', 'test_read_valid_single_pipeline_with_files_only_config', 'test_reading_existing_invalid_config_file_raises_error', 'test_reading_existing_valid_config_file_returns_string', 'test_reading_non_existing_config_file_raises_exception']" in result.output
+    assert result.exit_code == ExitCode.ok
+
+
+def test_coverage_single_file():
+    runner = CliRunner()
+    result = runner.invoke(cli, ['-c', 'tests/data/tia.yaml', 'coverage', '-d', 'tests/data/.coverage', 'test_is_no_ci'])
+    assert "['/home/fk/github/python-tia/tia/env.py']" in result.output
+    assert result.exit_code == ExitCode.ok
