@@ -4,6 +4,8 @@ from sys import stderr
 
 import click
 
+from tia.cov import get_context_table, get_file_table, get_line_table
+from tia.maps import get_impact_map
 
 class ExitCode(IntEnum):
     ok = 0
@@ -38,9 +40,10 @@ def cli(ctx, verbose, config_file):
 
 
 @cli.command(help='Discover impact of production code on tests. \
-If no production code file is provided with [CODE] the whole impact map \
-(production code vs. tests) is provided on stdout.')
-@click.argument('code', required=False, type=click.Path(resolve_path=True), default=None)
+Specify production code file or files with [FILES]. The corresponding \
+tests are provided via stdout. For impacted tests on a per file basis \
+use the verbose output (option -v/--verbose).')
+@click.argument('files', nargs=-1, required=False, type=click.Path(resolve_path=True), default=None)
 @click.option(
     '--coverage-database',
     '-d',
@@ -48,15 +51,28 @@ If no production code file is provided with [CODE] the whole impact map \
     default='.coverage',
     help='Which coverage database shall be used? (Default: .coverage)')
 @click.pass_context
-def impact(ctx, code, coverage_database):
-    print(code)
-    print(coverage_database)
+def impact(ctx, files, coverage_database):
+    import pprint
     verbose = ctx.obj['verbose']  # get options from parent command context
     if verbose:
-        if code:
-            print('Production code file: ', click.format_filename(code))
+        if files:
+            print('Production code file(s):')
+            pprint.pprint(files)
+        print('Coverage database:')
+        print(coverage_database)
     coverage_database_path = Path(coverage_database)
     if not coverage_database_path.is_file():
         print('Database file {} is not existing.'.format(coverage_database_path), file=stderr)
         exit(ExitCode.not_ok)
     # validation if coverage database file path is a sqlite3 database later
+    file_table = get_file_table(coverage_database)
+    line_table = get_line_table(coverage_database)
+    context_table = get_context_table(coverage_database)
+    impact_map = get_impact_map(file_table, line_table, context_table, iter(files))
+    if verbose:
+        # impact map output on a per file basis
+        print('Impact Map:')
+        pprint.pprint(impact_map)
+    else:
+        tests = impact_map.map(lambda x: x.tests).flatten().sorted()
+        print(tests)

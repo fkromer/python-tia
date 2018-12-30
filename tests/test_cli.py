@@ -52,11 +52,15 @@ def test_database_file_nonexisting():
     assert result.exit_code == ExitCode.not_ok
 
 
-def test_impact_code():
+def test_impact_single_file():
     runner = CliRunner()
     # valid -c option, valid -d option, valid production code file
     result = runner.invoke(cli, [
-        '-v', '-c', 'tests/data/tia.yaml', 'impact', '-d', 'tests/data/.coverage', 'tia/config.py'
-    ])
-    assert 'Production code file: ' and '/python-tia/tia/config.py' in result.output
-    assert result.exit_code == ExitCode.ok
+        '-c', 'tests/data/tia.yaml', 'impact', '-d', 'tests/data/.coverage', 'tia/env.py'])
+    assert "['test_is_no_ci', 'test_is_some_ci']" in result.output
+
+
+def test_impact_several_files():
+    runner = CliRunner()
+    result = runner.invoke(cli, ['-c', 'tests/data/tia.yaml', 'impact', '-d', 'tests/data/.coverage', 'tia/env.py', 'tia/config.py'])
+    assert "['test_is_no_ci', 'test_is_some_ci', 'test_read_invalid_pipelines_config', 'test_read_valid_explicit_full_blown_pipelines_config', 'test_read_valid_implicit_full_blown_pipelines_config', 'test_read_valid_parent_key_config', 'test_read_valid_single_pipeline_with_dirs_only_config', 'test_read_valid_single_pipeline_with_files_only_config', 'test_reading_existing_invalid_config_file_raises_error', 'test_reading_existing_valid_config_file_returns_string', 'test_reading_non_existing_config_file_raises_exception']" in result.output
