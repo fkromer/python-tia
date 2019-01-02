@@ -29,6 +29,9 @@ def read_and_validate_config(strictyaml_config: str) -> YAML:
 
 
 def is_pipelines_config_valid(strictyaml_pipelines: YAML) -> YAML:
+    """
+    TODO: Refactor to test and analyzer specific config validation.
+    """
     pipelines_schema = Map({
         "pipelines":
         Seq(
@@ -37,6 +40,8 @@ def is_pipelines_config_valid(strictyaml_pipelines: YAML) -> YAML:
                 Str(),
                 "type":
                 Enum(["test", "analyzer"]),
+                Optional("coverage"):
+                Str(),
                 Optional("commands"):
                 Map({
                     "partial-scope": Str(),

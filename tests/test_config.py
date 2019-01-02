@@ -58,6 +58,7 @@ def test_read_valid_explicit_full_blown_pipelines_config():
     pipelines:
     - name: pytest
       type: test
+      coverage: .coverage
       commands:
         partial-scope: pytest --cov=tia {tests}
         full-scope: pytest --cov=tia tests
@@ -86,7 +87,7 @@ def test_read_valid_explicit_full_blown_pipelines_config():
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
     expected_yaml_instance = YAML(
         OrderedDict([('pipelines', [
-            OrderedDict([('name', 'pytest'), ('type', 'test'),
+            OrderedDict([('name', 'pytest'), ('type', 'test'), ('coverage', '.coverage'),
                          (
                              'commands',
                              OrderedDict([('partial-scope', 'pytest --cov=tia {tests}'),
@@ -118,6 +119,7 @@ def test_read_valid_implicit_full_blown_pipelines_config():
     pipelines:
     - name: pytest
       type: test
+      coverage: .coverage
       dirs:
       - path:       /foo_dir
         full-scope: yes
@@ -137,7 +139,7 @@ def test_read_valid_implicit_full_blown_pipelines_config():
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
     expected_yaml_instance = YAML(
         OrderedDict([('pipelines', [
-            OrderedDict([('name', 'pytest'), ('type', 'test'),
+            OrderedDict([('name', 'pytest'), ('type', 'test'), ('coverage', '.coverage'),
                          ('dirs', [
                              OrderedDict([('path', '/foo_dir'), ('full-scope', True)]),
                              OrderedDict([('path', '/bar_dir'), ('full-scope', False)])
@@ -160,6 +162,7 @@ def test_read_valid_single_pipeline_with_dirs_only_config():
     pipelines:
     - name: pytest
       type: test
+      coverage: .coverage
       dirs:
       - path:       /foo_dir
         full-scope: yes
@@ -169,7 +172,7 @@ def test_read_valid_single_pipeline_with_dirs_only_config():
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
     expected_yaml_instance = YAML(
         OrderedDict([('pipelines', [
-            OrderedDict([('name', 'pytest'), ('type', 'test'),
+            OrderedDict([('name', 'pytest'), ('type', 'test'), ('coverage', '.coverage'),
                          ('dirs', [
                              OrderedDict([('path', '/foo_dir'), ('full-scope', True)]),
                              OrderedDict([('path', '/bar_dir'), ('full-scope', False)])
@@ -184,6 +187,7 @@ def test_read_valid_single_pipeline_with_files_only_config():
     pipelines:
     - name: pytest
       type: test
+      coverage: .coverage
       files:
       - path:       foo_file.py
         full-scope: yes
@@ -193,7 +197,7 @@ def test_read_valid_single_pipeline_with_files_only_config():
     yaml_pipelines = read_and_validate_config(yaml_pipelines_config)
     expected_yaml_instance = YAML(
         OrderedDict([('pipelines', [
-            OrderedDict([('name', 'pytest'), ('type', 'test'),
+            OrderedDict([('name', 'pytest'), ('type', 'test'), ('coverage', '.coverage'),
                          ('files', [
                              OrderedDict([('path', 'foo_file.py'), ('full-scope', True)]),
                              OrderedDict([('path', 'bar_file.py'), ('full-scope', False)])
@@ -211,6 +215,7 @@ def test_read_invalid_pipelines_config():
     pipelines:
     - name: pytest
       type: test
+      coverage: .coverage
       dirs:
       - full-scope: yes
       - path:       /bar_dir
