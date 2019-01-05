@@ -54,7 +54,8 @@ def get_coverage_map(context_table_rows, line_table_rows, file_table_rows, tests
     file_table_rows.cache()
     for test_name in tests:
         # TODO: make search strict and fuzzy search in separate function (SRP)
-        test = context_table_rows.filter(lambda x: test_name in x.context)  # fuzzy search like filtering
+        test = context_table_rows.filter(
+            lambda x: test_name in x.context)  # fuzzy search like filtering
         test_id = test.head().context_id
         covered_lines_rows = line_table_rows.filter(lambda x: x.context_id == test_id)
         file_ids = (l.file_id for l in covered_lines_rows)
@@ -89,7 +90,7 @@ def get_impact_map(file_table_rows, line_table_rows, context_table_rows, file_pa
         for test_id in test_ids:
             impacted_context_rows = context_table_rows.filter(lambda x: x.context_id == test_id)
             test = impacted_context_rows.head().context
-            # workaround for coveragepy 5.02a empty and irrelevant context entries 
+            # workaround for coveragepy 5.02a empty and irrelevant context entries
             if test is not "" or not "testsfailed":
                 tests.add(test)
         filter(None, tests)  # get rid of empty set element

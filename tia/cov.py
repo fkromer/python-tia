@@ -52,7 +52,8 @@ def get_file_table(db_path: str) -> FileTable:
 
 
 def get_context_table(db_path: str) -> ContextTable:
-    context_table_rows = seq.sqlite3(db_path, 'SELECT * FROM context').map(lambda x: ContextTableRow(*x))
+    context_table_rows = seq.sqlite3(db_path,
+                                     'SELECT * FROM context').map(lambda x: ContextTableRow(*x))
     return context_table_rows
 
 

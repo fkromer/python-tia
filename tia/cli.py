@@ -8,6 +8,7 @@ import click
 from tia.cov import get_context_table, get_file_table, get_line_table
 from tia.maps import get_coverage_map, get_impact_map
 
+
 class ExitCode(IntEnum):
     ok = 0
     not_ok = 1
@@ -44,7 +45,8 @@ def cli(ctx, verbose, config_file):
 Specify production code file or files with [FILES]. The corresponding \
 tests are provided via stdout. For impacted tests on a per file basis \
 use the verbose output (option -v/--verbose).')
-@click.argument('files', nargs=-1, required=False, type=click.Path(resolve_path=False), default=None)
+@click.argument(
+    'files', nargs=-1, required=False, type=click.Path(resolve_path=False), default=None)
 @click.option(
     '--coverage-database',
     '-d',
@@ -85,11 +87,13 @@ def impact(ctx, files, coverage_database):
 Specify test or tests with [TESTS]. The corresponding production \
 code files are provided via stdout. For covered production code files \
 on a per test basis use the verbose output (option -v/--verbose).')
-@click.argument('tests', nargs=-1, required=False, type=click.Path(resolve_path=False), default=None)
-@click.option('--coverage-database',
-              '-d',
-              type=click.Path(resolve_path=True),
-              help='Which coverage database shall be used? (Default: .coverage)')
+@click.argument(
+    'tests', nargs=-1, required=False, type=click.Path(resolve_path=False), default=None)
+@click.option(
+    '--coverage-database',
+    '-d',
+    type=click.Path(resolve_path=True),
+    help='Which coverage database shall be used? (Default: .coverage)')
 @click.pass_context
 def coverage(ctx, tests, coverage_database):
     verbose = ctx.obj['verbose']  # get options from parent command context

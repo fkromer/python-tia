@@ -34,11 +34,21 @@ def test_impact_map():
     file_table = get_file_table(db_path)
     line_table = get_line_table(db_path)
     context_table = get_context_table(db_path)
-    impact_map = get_impact_map(file_table, line_table, context_table, changed_production_code_files)
+    impact_map = get_impact_map(file_table, line_table, context_table,
+                                changed_production_code_files)
 
     first_impact_mapping = impact_map.first()
     assert first_impact_mapping.production_code == 'tia/config.py'
-    assert sorted(first_impact_mapping.tests) == sorted(['test_read_valid_single_pipeline_with_dirs_only_config', 'test_reading_existing_valid_config_file_returns_string', 'test_read_valid_single_pipeline_with_files_only_config', 'test_read_invalid_pipelines_config', 'test_reading_existing_invalid_config_file_raises_error', 'test_read_valid_parent_key_config', 'test_read_valid_explicit_full_blown_pipelines_config', 'test_reading_non_existing_config_file_raises_exception', 'test_read_valid_implicit_full_blown_pipelines_config'])
+    assert sorted(first_impact_mapping.tests) == sorted([
+        'test_read_valid_single_pipeline_with_dirs_only_config',
+        'test_reading_existing_valid_config_file_returns_string',
+        'test_read_valid_single_pipeline_with_files_only_config',
+        'test_read_invalid_pipelines_config',
+        'test_reading_existing_invalid_config_file_raises_error',
+        'test_read_valid_parent_key_config', 'test_read_valid_explicit_full_blown_pipelines_config',
+        'test_reading_non_existing_config_file_raises_exception',
+        'test_read_valid_implicit_full_blown_pipelines_config'
+    ])
 
     last_impact_mapping = impact_map.last()
     assert last_impact_mapping.production_code == 'tia/env.py'
