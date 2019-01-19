@@ -7,6 +7,7 @@ from strictyaml import YAML
 from tia.config import (
     CONFIG_FILE_NAME,
     ConfigError,
+    expand_directory,
     is_pipelines_config_valid,
     read_and_validate_config,
     read_file,
@@ -234,3 +235,18 @@ def test_read_invalid_pipelines_config():
     config = read_and_validate_config(yaml_pipelines_config)
     yaml_pipelines = config['pipelines']
     assert is_pipelines_config_valid(yaml_pipelines) == False
+
+
+def test_directory_expansion(tmp_path):
+    d = tmp_path / "root"
+    d.mkdir()
+    sub = d / "sub"
+    sub.mkdir()
+    p = d / "hello.txt"
+    p.write_text("doesnt matter")
+    p1 = d / "sub" / "code.py"
+    p1.write_text("source code")
+    purepaths = list(d.glob('**/*'))
+    paths = [p.as_posix() for p in purepaths if p.is_file()]
+    expanded_dir = list(expand_directory(d.as_posix()))
+    assert paths == expanded_dir

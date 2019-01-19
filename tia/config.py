@@ -1,9 +1,15 @@
 from pathlib import Path
 
+from glob import iglob
 from strictyaml import YAML, Any, Bool, Enum, Map, Optional, Seq, Str, load
 from strictyaml.exceptions import YAMLValidationError
+from typing import Iterator
+
+from tia.cov import FilePath  # TODO: cleanup
 
 CONFIG_FILE_NAME: str = 'tia.yaml'
+
+DirectoryPath = str
 
 
 class ConfigError(Exception):
@@ -64,3 +70,15 @@ def is_pipelines_config_valid(strictyaml_pipelines: YAML) -> YAML:
         return True
     except YAMLValidationError:
         return False
+
+
+def expand_directory(dir: DirectoryPath) -> Iterator[FilePath]:
+    """
+    Directories are represented as string (not pathlib.Purepath)
+    due to performance and memory reasons. To ease directory expansion
+    files are expected to end with a suffix containing a dot.
+    """
+    pattern = dir + '/**/*.*'
+    for path in iglob(pattern, recursive=True):
+        if path:
+            yield path
