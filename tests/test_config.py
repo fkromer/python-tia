@@ -14,8 +14,11 @@ from tia.config import (
     get_pipeline_configs,
     AnalyzerPipelineConfig,
     PipelineConfig,
+    AnalyzerPipelineConfigExpanded,
+    PipelineConfigExpanded,
     FileConfig,
     DirConfig,
+    expand_pipeline_config,
 )
 
 pytestmark = [pytest.mark.unit, pytest.mark.configuration]
@@ -293,19 +296,39 @@ def test_get_pipeline_configs():
     assert pipeline_configs == (PipelineConfig(
         name='pytest',
         coverage_db='.coverage',
-        dirs=(
-            DirConfig(path='/foo_dir', full_scope='yes'),
-            DirConfig(path='/bar_dir', full_scope='no')
-        ),
-        files=(
-            FileConfig(path='foo_file.py', full_scope='yes'),
-            FileConfig(path='bar_file.py', full_scope='no')
-        ),
+        dirs=(DirConfig(path='/foo_dir', full_scope='yes'),
+              DirConfig(path='/bar_dir', full_scope='no')),
+        files=(FileConfig(path='foo_file.py', full_scope='yes'),
+               FileConfig(path='bar_file.py', full_scope='no')),
         full_scope_command='pytest --cov=tia tests',
         partial_scope_command='pytest --cov=tia {tests}'),
                                 AnalyzerPipelineConfig(
                                     name='pylint',
-                                    dirs=(DirConfig(path='/baz_dir', full_scope='no'),),
-                                    files=(FileConfig(path='baz_file.ini', full_scope='yes'),),
+                                    dirs=(DirConfig(path='/baz_dir', full_scope='no'), ),
+                                    files=(FileConfig(path='baz_file.ini', full_scope='yes'), ),
                                     full_scope_command='pylint tia',
                                     partial_scope_command='pylint {files}'))
+
+
+# TODO: test expand_pipeline_config()
+# def test_pipeline_directory_expansion():
+#     test_pipeline_config = PipelineConfig(
+#         name='pytest',
+#         coverage_db='.coverage',
+#         dirs=[
+#             DirConfig(path='/foo_dir', full_scope='yes'),
+#             DirConfig(path='/bar_dir', full_scope='no')
+#         ],
+#         files=[
+#             FileConfig(path='foo_file.py', full_scope='yes'),
+#             FileConfig(path='bar_file.py', full_scope='no')
+#         ],
+#         full_scope_command='pytest --cov=tia tests',
+#         partial_scope_command='pytest --cov=tia {tests}')
+#     expanded_test_pipline_config = expand_pipeline_config(test_pipeline_config)
+#     assert expanded_test_pipline_config == PipelineConfigExpanded(
+#         name='pytest',
+#         coverage_db='.coverage',
+#         files='<generator object expand_pipeline_config.<locals>.<genexpr> at 0x7f4ae51eaba0>',
+#         full_scope_command='pytest --cov=tia tests',
+#         partial_scope_command='pytest --cov=tia {tests}')

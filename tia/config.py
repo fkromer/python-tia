@@ -24,8 +24,15 @@ class DirConfig(NamedTuple):
 
 class AnalyzerPipelineConfig(NamedTuple):
     name: str
-    dirs: Tuple[DirConfig]
-    files: Tuple[FileConfig]
+    dirs: Tuple[DirConfig, ...]
+    files: Tuple[FileConfig, ...]
+    full_scope_command: str
+    partial_scope_command: str
+
+
+class AnalyzerPipelineConfigExpanded(NamedTuple):
+    name: str
+    files: Iterator[FileConfig]
     full_scope_command: str
     partial_scope_command: str
 
@@ -34,8 +41,16 @@ class AnalyzerPipelineConfig(NamedTuple):
 class PipelineConfig(NamedTuple):
     name: str
     coverage_db: str
-    dirs: Tuple[DirConfig]
-    files: Tuple[FileConfig]
+    dirs: Tuple[DirConfig, ...]
+    files: Tuple[FileConfig, ...]
+    full_scope_command: str
+    partial_scope_command: str
+
+
+class PipelineConfigExpanded(NamedTuple):
+    name: str
+    coverage_db: str
+    files: Iterator[FileConfig]
     full_scope_command: str
     partial_scope_command: str
 
@@ -125,12 +140,12 @@ def get_pipeline_configs(
         partial_scope_command = p["commands"]["partial-scope"].value
         try:
             directories = [DirConfig(d["path"].value, d["full-scope"].value) for d in p["dirs"]]
-            directories = tuple(directories)
+            directories_immutable = tuple(directories)
         except:
             pass  # dirs are optional
         try:
             files = [FileConfig(d["path"].value, d["full-scope"].value) for d in p["files"]]
-            files = tuple(files)
+            files_immutable = tuple(files)
         except:
             pass  # files are optional
         if p['type'].value == 'test':
@@ -138,15 +153,46 @@ def get_pipeline_configs(
             pipeline_config = PipelineConfig(
                 name=name,
                 coverage_db=coverage_db,
-                dirs=directories,
-                files=files,
+                dirs=directories_immutable,
+                files=files_immutable,
                 full_scope_command=full_scope_command,
                 partial_scope_command=partial_scope_command)
         else:  # only other valid type is "analyzer" pipeline
             pipeline_config = AnalyzerPipelineConfig(
                 name=name,
-                dirs=directories,
-                files=files,
+                dirs=directories_immutable,
+                files=files_immutable,
                 full_scope_command=full_scope_command,
                 partial_scope_command=partial_scope_command)
         yield pipeline_config
+
+
+# TODO: test expand_pipeline_config()
+def expand_pipeline_config(pipeline_config: Union[AnalyzerPipelineConfig, PipelineConfig]
+                           ) -> Union[AnalyzerPipelineConfigExpanded, PipelineConfigExpanded]:
+    expanded_file_configs = []
+    for d in pipeline_config.dirs:
+        file_paths = expand_directory(d.path)
+        for file_path in file_paths:
+            file_config = FileConfig(file_path, d.full_scope)
+            expanded_file_configs.append(file_config)
+    # add file_configs into expanded_file_configs
+    file_configs = [fc for fc in pipeline_config.files]
+    file_configs.extend(expanded_file_configs)
+    file_config_generator = (f for f in file_configs)
+    if type(pipeline_config) is PipelineConfig:
+        expanded_config = PipelineConfigExpanded(
+            name=pipeline_config.name,
+            coverage_db=pipeline_config.coverage_db,  # mypy: false positive
+            files=file_config_generator,
+            full_scope_command=pipeline_config.full_scope_command,
+            partial_scope_command=pipeline_config.partial_scope_command)
+    elif type(pipeline_config) is AnalyzerPipelineConfig:
+        expanded_config = AnalyzerPipelineConfigExpanded(  # mypy: false positive
+            name=pipeline_config.name,
+            files=file_config_generator,
+            full_scope_command=pipeline_config.full_scope_command,
+            partial_scope_command=pipeline_config.partial_scope_command)
+    else:
+        ConfigError("Pipeline directories of unsupported pipeline type cannot be expanded.")
+    return expanded_config
