@@ -3,13 +3,41 @@ from pathlib import Path
 from glob import iglob
 from strictyaml import YAML, Any, Bool, Enum, Map, Optional, Seq, Str, load
 from strictyaml.exceptions import YAMLValidationError
-from typing import Iterator
+from typing import Iterator, NamedTuple, Tuple, Generator, Union
 
 from tia.cov import FilePath  # TODO: cleanup
 
 CONFIG_FILE_NAME: str = 'tia.yaml'
 
 DirectoryPath = str
+
+
+class FileConfig(NamedTuple):
+    path: str
+    full_scope: bool
+
+
+class DirConfig(NamedTuple):
+    path: str
+    full_scope: bool
+
+
+class AnalyzerPipelineConfig(NamedTuple):
+    name: str
+    dirs: Tuple[DirConfig]
+    files: Tuple[FileConfig]
+    full_scope_command: str
+    partial_scope_command: str
+
+
+# TODO: fix pytest issue in case of rename to TestPipelineConfig
+class PipelineConfig(NamedTuple):
+    name: str
+    coverage_db: str
+    dirs: Tuple[DirConfig]
+    files: Tuple[FileConfig]
+    full_scope_command: str
+    partial_scope_command: str
 
 
 class ConfigError(Exception):
@@ -72,6 +100,10 @@ def is_pipelines_config_valid(strictyaml_pipelines: YAML) -> YAML:
         return False
 
 
+# TODO: Helper which verifies that dirs and files in config are valid paths
+# before expanding them.
+
+
 def expand_directory(dir: DirectoryPath) -> Iterator[FilePath]:
     """
     Directories are represented as string (not pathlib.Purepath)
@@ -82,3 +114,39 @@ def expand_directory(dir: DirectoryPath) -> Iterator[FilePath]:
     for path in iglob(pattern, recursive=True):
         if path:
             yield path
+
+
+def get_pipeline_configs(
+        strictyaml_config: YAML) -> Iterator[Union[AnalyzerPipelineConfig, PipelineConfig]]:
+    pipelines = strictyaml_config['pipelines']
+    for p in pipelines:
+        name = p["name"].value
+        full_scope_command = p["commands"]["full-scope"].value
+        partial_scope_command = p["commands"]["partial-scope"].value
+        try:
+            directories = [DirConfig(d["path"].value, d["full-scope"].value) for d in p["dirs"]]
+            directories = tuple(directories)
+        except:
+            pass  # dirs are optional
+        try:
+            files = [FileConfig(d["path"].value, d["full-scope"].value) for d in p["files"]]
+            files = tuple(files)
+        except:
+            pass  # files are optional
+        if p['type'].value == 'test':
+            coverage_db = p["coverage"].value
+            pipeline_config = PipelineConfig(
+                name=name,
+                coverage_db=coverage_db,
+                dirs=directories,
+                files=files,
+                full_scope_command=full_scope_command,
+                partial_scope_command=partial_scope_command)
+        else:  # only other valid type is "analyzer" pipeline
+            pipeline_config = AnalyzerPipelineConfig(
+                name=name,
+                dirs=directories,
+                files=files,
+                full_scope_command=full_scope_command,
+                partial_scope_command=partial_scope_command)
+        yield pipeline_config

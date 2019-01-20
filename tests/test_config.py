@@ -11,6 +11,11 @@ from tia.config import (
     is_pipelines_config_valid,
     read_and_validate_config,
     read_file,
+    get_pipeline_configs,
+    AnalyzerPipelineConfig,
+    PipelineConfig,
+    FileConfig,
+    DirConfig,
 )
 
 pytestmark = [pytest.mark.unit, pytest.mark.configuration]
@@ -250,3 +255,57 @@ def test_directory_expansion(tmp_path):
     paths = [p.as_posix() for p in purepaths if p.is_file()]
     expanded_dir = list(expand_directory(d.as_posix()))
     assert paths == expanded_dir
+
+
+def test_get_pipeline_configs():
+    yaml_overall_config = """
+    pipelines:
+    - name: pytest
+      type: test
+      coverage: .coverage
+      commands:
+        partial-scope: pytest --cov=tia {tests}
+        full-scope: pytest --cov=tia tests
+      dirs:
+      - path:       /foo_dir
+        full-scope: yes
+      - path:       /bar_dir
+        full-scope: no
+      files:
+      - path:       foo_file.py
+        full-scope: yes
+      - path:       bar_file.py
+        full-scope: no
+    - name: pylint
+      type: analyzer
+      commands:
+        partial-scope: pylint {files}
+        full-scope: pylint tia
+      dirs:
+      - path:       /baz_dir
+        full-scope: no
+      files:
+      - path:       baz_file.ini
+        full-scope: yes
+    """
+    config = read_and_validate_config(yaml_overall_config)
+    pipeline_configs = tuple(get_pipeline_configs(config))
+    assert pipeline_configs == (PipelineConfig(
+        name='pytest',
+        coverage_db='.coverage',
+        dirs=(
+            DirConfig(path='/foo_dir', full_scope='yes'),
+            DirConfig(path='/bar_dir', full_scope='no')
+        ),
+        files=(
+            FileConfig(path='foo_file.py', full_scope='yes'),
+            FileConfig(path='bar_file.py', full_scope='no')
+        ),
+        full_scope_command='pytest --cov=tia tests',
+        partial_scope_command='pytest --cov=tia {tests}'),
+                                AnalyzerPipelineConfig(
+                                    name='pylint',
+                                    dirs=(DirConfig(path='/baz_dir', full_scope='no'),),
+                                    files=(FileConfig(path='baz_file.ini', full_scope='yes'),),
+                                    full_scope_command='pylint tia',
+                                    partial_scope_command='pylint {files}'))
