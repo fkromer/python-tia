@@ -18,7 +18,7 @@ pytestmark = pytest.mark.unit
     'TRAVIS',
     'TF_BUILD',
 ])
-def test_is_some_ci(monkeypatch, ci_env_var):
+def test_is_ci(monkeypatch, ci_env_var):
     monkeypatch.setenv(ci_env_var, '')
     assert is_ci()
 

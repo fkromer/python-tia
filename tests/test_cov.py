@@ -235,22 +235,25 @@ line_table_rows = [
 ]
 
 
-def test_get_context_table():
-    db_path = 'tests/data/.coverage'
-    table_rows_iterator = get_context_table(db_path)
-    table_rows = list(table_rows_iterator)
-    assert table_rows == context_table_rows
+class TestContextTable:
+    def test_get_table(self):
+        db_path = 'tests/data/.coverage'
+        table_rows_iterator = get_context_table(db_path)
+        table_rows = list(table_rows_iterator)
+        assert table_rows == context_table_rows
 
 
-def test_get_file_table():
-    db_path = 'tests/data/.coverage'
-    table_rows_iterator = get_file_table(db_path)
-    table_rows = list(table_rows_iterator)
-    assert table_rows == file_table_rows
+class TestFileTable:
+    def test_get_table(self):
+        db_path = 'tests/data/.coverage'
+        table_rows_iterator = get_file_table(db_path)
+        table_rows = list(table_rows_iterator)
+        assert table_rows == file_table_rows
 
 
-def test_get_line_table():
-    db_path = 'tests/data/.coverage'
-    table_rows_iterator = get_line_table(db_path)
-    table_rows = list(table_rows_iterator)
-    assert table_rows == line_table_rows
+class TestLineTable:
+    def test_get_table(self):
+        db_path = 'tests/data/.coverage'
+        table_rows_iterator = get_line_table(db_path)
+        table_rows = list(table_rows_iterator)
+        assert table_rows == line_table_rows
