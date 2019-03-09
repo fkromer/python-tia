@@ -63,6 +63,49 @@ determine test files and folders which have been changed locally.
 .. _pytest-picked (github): https://github.com/anapaulagomes/pytest-picked
 .. _pytest-picked (pypi): https://pypi.org/project/pytest-picked
 
+pytest-smartcollect
+-------------------
+
+**Lead developer**: `Abigail Hahn <https://github.com/vardaofthevalier>`_ (Microsoft)
+
+**Package**: `PyPI (pytest-smartcollect 1.0.2) <https://pypi.org/project/pytest-smartcollect/>`_
+
+**Source code**: `GitHub <https://github.com/vardaofthevalier/pytest-smartcollect>`_
+
+
+
+**Documentation**: `Read The Docs <https://smother.readthedocs.io>`_
+
+**Change detection**
+
+VCS based file and file line scope change detection with `gitpython`.
+Test function scope detection of changed lines in function body.
+"Member" scope change detection with abstract syntax tree parsing using `ast`.
+"Members" are any names that can be imported from a module, including
+assignments, function definitions and class definitions.
+Test function scope detection based on use of a changed member from another module.
+Supports detection based on composition (function and class definitions) and inheritance (class definitions).
+
+**Semantic mapping**
+
+No semantic mapping.
+
+**Pipeline execution**
+
+No pipeline execution.
+
+**Coverage mapping**
+
+TODO
+
+**Impact mapping**
+
+TODO
+
+**History**
+
+TODO
+
 pytest-testmon
 --------------
 
