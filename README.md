@@ -8,6 +8,10 @@
 
 `tia`: The generic Test Impact Analysis (TIA) preprocessor for test tools.
 
+![Guardians of the Galaxy - Spaceship Milano](guardians_of_the_galaxy_milano.gif)
+
+Get the guardians of your galaxy to where they are actually needed.
+
 Refer to the documentation on [python-tia.readthedocs.io](https://python-tia.readthedocs.io).
 
 ## Installation
